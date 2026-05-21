@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FaUserAlt } from 'react-icons/fa';
-import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { logIn } from "@/lib/features/user/userSlice";
 import { closeModal } from "@/lib/features/modal/modalSlice";
@@ -22,9 +21,9 @@ const LoginModal: React.FC = () => {
 
   const [signState, setSignState] = useState<SignState>(SignState.signIn);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [errMsg, seterrMsg] = useState<string>("");
 
   const dispatch = useAppDispatch();
 
@@ -40,9 +39,14 @@ const LoginModal: React.FC = () => {
     dispatch(closeModal());
   }
 
+  const switchSignState = (newState: SignState) => {
+    setSignState(newState);
+    seterrMsg("");
+  }
+
   const userAuth = async () => {
-    setLoading(true);
     let fbres: FBResult;
+    seterrMsg("");
     if (signState === SignState.signIn) {
       fbres = await login(email, password);
     } else {
@@ -51,12 +55,9 @@ const LoginModal: React.FC = () => {
     if (fbres.user) {
       userLogin();
     } else {
-      const message = signState == SignState.signIn ? "Log in" : "Sign up";
-      toast.error(message + " failed: " + fbres.message.split("/")[1].split("-").join(" "));
+      seterrMsg(fbres.message.split('/')[1].replaceAll("-", " "));
     }
-    setLoading(false);
   }
-
 
   // Use createPortal to render outside the main DOM hierarchy
   return ReactDOM.createPortal(
@@ -71,6 +72,11 @@ const LoginModal: React.FC = () => {
           <>
             <div className={styles.body}>
               <h3>Reset your password</h3>
+              {errMsg && (
+                <div className={styles.error}>
+                  Reset failed: {errMsg}
+                </div>
+              )}
               <input
                 type="email"
                 className={styles.input}
@@ -84,7 +90,7 @@ const LoginModal: React.FC = () => {
             <div className={styles.forgot}> </div>
             <button
               className={styles.btnRegister}
-              onClick={() => setSignState(SignState.signIn)}
+              onClick={() => switchSignState(SignState.signIn)}
             >
               Go to login
             </button>
@@ -94,6 +100,11 @@ const LoginModal: React.FC = () => {
           <>
             <div className={styles.body}>
               <h3>Sign up to Summarist</h3>
+              {errMsg && (
+                <div className={styles.error}>
+                  Sign up failed: {errMsg}
+                </div>
+              )}
               <button className={styles.btnGoogle}>
                 <div className={styles.btnImg}>
                   <img src="google.png" alt="" width="36px" height="36px" style={{ backgroundColor: "white", padding: "4px", borderRadius: "6px" }} />
@@ -123,7 +134,7 @@ const LoginModal: React.FC = () => {
             </div>
             <button
               className={styles.btnRegister}
-              onClick={() => setSignState(SignState.signIn)}
+              onClick={() => switchSignState(SignState.signIn)}
             >
               Already have an acccount?
             </button>
@@ -133,6 +144,11 @@ const LoginModal: React.FC = () => {
           <>
             <div className={styles.body}>
               <h3>Log in to Summarist</h3>
+              {errMsg && (
+                <div className={styles.error}>
+                  Login failed: {errMsg}
+                </div>
+              )}
               <button className={styles.btnGuest} onClick={userLogin}>
                 <div className={styles.btnImg}>
                   <FaUserAlt style={{ paddingLeft: "4px", paddingTop: "4px" }} />
@@ -167,13 +183,13 @@ const LoginModal: React.FC = () => {
             </div>
             <div
               className={styles.forgot}
-              onClick={() => setSignState(SignState.resetPassword)}
+              onClick={() => switchSignState(SignState.resetPassword)}
             >
               Forgot your password?
             </div>
             <button
               className={styles.btnRegister}
-              onClick={() => setSignState(SignState.signUp)}
+              onClick={() => switchSignState(SignState.signUp)}
             >
               Don't have an account?
             </button>

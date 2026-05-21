@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import StoreProvider from "@/components/store/StoreProvider";
-import ToastProvider from "@/components/toast/ToastProvider"
 
 export const metadata: Metadata = {
   title: "Summarist Home Page",
@@ -17,9 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <StoreProvider>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
+          {children}
         </StoreProvider>
       </body>
     </html>
