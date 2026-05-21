@@ -55,6 +55,7 @@
   align-items: center;
   justify-content: center;
   min-width: 180px;
+  position: relative;
 }
 
 .btn:hover:not(:disabled) {
@@ -63,10 +64,6 @@
 
 .btn:active {
   transform: translateY(1px);
-}
-
-.btn {
-  position: relative;
 }
 
 .btnImg {
@@ -157,4 +154,8 @@
   padding-top: 16px;
   padding-bottom: 16px;
   cursor: pointer;
+}
+
+.error {
+  color: red;
 }
