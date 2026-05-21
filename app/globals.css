@@ -446,6 +446,37 @@ button:disabled {
   font-weight: 500;
 }
 
+/*
+  LAYOUT FOR USER PAGES
+*/
+
+.wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-left: 200px;
+    width: calc(100% - 200px);
+    transition: all .3s;
+}
+
+.sidebar__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #3a4649;
+    transition: opacity .4s ease 0s;
+    z-index: 10;
+    opacity: .65;
+    pointer-events: auto;
+}
+
+.sidebar__overlay--hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
 
 @media (max-width: 768px) {
   .landing__content {
