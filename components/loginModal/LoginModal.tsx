@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
+import { useRouter } from 'next/navigation';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FaUserAlt } from 'react-icons/fa';
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -19,14 +20,14 @@ const LoginModal: React.FC = () => {
     resetPassword
   }
 
-  const [signState, setSignState] = useState<SignState>(SignState.signIn);
+  const router = useRouter();
 
+  const [signState, setSignState] = useState<SignState>(SignState.signIn);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errMsg, seterrMsg] = useState<string>("");
 
   const dispatch = useAppDispatch();
-
   const user = useAppSelector(state => state.user);
   const modal = useAppSelector(state => state.modal);
 
@@ -37,6 +38,7 @@ const LoginModal: React.FC = () => {
   const userLogin = () => {
     dispatch(logIn());
     dispatch(closeModal());
+    router.push("/for-you");
   }
 
   const switchSignState = (newState: SignState) => {
@@ -107,7 +109,7 @@ const LoginModal: React.FC = () => {
               )}
               <button className={styles.btnGoogle}>
                 <div className={styles.btnImg}>
-                  <img src="google.png" alt="" width="36px" height="36px" style={{ backgroundColor: "white", padding: "4px", borderRadius: "6px" }} />
+                  <img src="/google.png" alt="" width="36px" height="36px" style={{ backgroundColor: "white", padding: "4px", borderRadius: "6px" }} />
                 </div>
                 <div className={styles.btnText}>Sign up with Google</div>
               </button>
@@ -158,7 +160,7 @@ const LoginModal: React.FC = () => {
               <div className={styles.divider}>or</div>
               <button className={styles.btnGoogle}>
                 <div className={styles.btnImg}>
-                  <img src="google.png" alt="" width="36px" height="36px" style={{ backgroundColor: "white", padding: "4px", borderRadius: "6px" }} />
+                  <img src="/google.png" alt="" width="36px" height="36px" style={{ backgroundColor: "white", padding: "4px", borderRadius: "6px" }} />
                 </div>
                 <div className={styles.btnText}>Login with Google</div>
               </button>

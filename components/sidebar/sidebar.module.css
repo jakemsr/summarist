@@ -1,0 +1,86 @@
+.container {
+    width: 200px;
+    min-width: 200px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #f7faf9;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    padding-top: 16px;
+    max-width: 160px;
+    margin: 0 auto;
+}
+
+.img {
+    width: 100%;
+    height: 40px;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100vh - 60px);
+    padding-bottom: 20px;
+    overflow-y: auto;
+}
+
+.top {
+    flex: 1;
+    margin-top: 40px;
+}
+
+.linkWrapper {
+    display: flex;
+    align-items: center;
+    height: 56px;
+    color: #032b41;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.linkWrapper:hover {
+    background-color: #edeceb;
+}
+
+.linkWrapper:last-child {
+    margin-bottom: 0;
+}
+
+.linkNotAllowed {
+    cursor: not-allowed;
+}
+
+.linkLine {
+    width: 5px;
+    height: 100%;
+    background-color: transparent;
+    margin-right: 16px;
+}
+
+.activeLink {
+    background-color: #2bd97c;
+}
+
+.iconWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+}
+
+.svg {
+    width: 24px;
+    height: 24px;
+}
+
+.linkText {
+    font-size: 16px;
+}
