@@ -54,7 +54,25 @@
     padding-left: 8px;
 }
 
-.svg {
+.icon svg {
     width: 24px;
     height: 24px;
+}
+
+.sidebarToggleBtn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.sidebarToggleBtn svg {
+    width: 24px;
+    height: 24px;
+}
+
+@media (max-width: 768px) {
+  .sidebarToggleBtn {
+      display: flex;
+  }
 }

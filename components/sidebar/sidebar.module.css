@@ -6,6 +6,8 @@
     top: 0;
     left: 0;
     background-color: #f7faf9;
+    transition: all .3s;
+    z-index: 1000;
 }
 
 .logo {
@@ -84,3 +86,15 @@
 .linkText {
     font-size: 16px;
 }
+
+@media (max-width: 768px) {
+    .container {
+        transform: translateX(-100%);
+    }
+}
+
+.containerOpen {
+    transform: translateX(0);
+    width: 80%;
+}
+

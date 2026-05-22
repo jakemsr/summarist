@@ -14,6 +14,7 @@ import { RxQuestionMarkCircled } from "react-icons/rx";
 import { FiLogOut } from "react-icons/fi";
 import { openModal } from "@/lib/features/modal/modalSlice";
 import { logOut, UserState } from "@/lib/features/user/userSlice";
+import { SidebarState, closeSidebar } from "@/lib/features/sidebar/sidebarSlice";
 
 const Sidebar = () => {
 
@@ -21,6 +22,7 @@ const Sidebar = () => {
 
   const dispatch = useAppDispatch();
   const user: UserState = useAppSelector(state => state.user);
+  const sidebar: SidebarState = useAppSelector(state => state.sidebar);
 
   const logInOrOut = () => {
     if (user.isLoggedIn) {
@@ -28,17 +30,18 @@ const Sidebar = () => {
     } else {
       dispatch(openModal());
     }
+    dispatch(closeSidebar());
   }
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${sidebar.isOpen? styles.containerOpen : ""}`}>
       <div className={styles.logo}>
         <img src="/logo.png" alt="" className={styles.img} />
       </div>
       <div className={styles.wrapper}>
         <div className={styles.top}>
 
-          <Link href="/for-you" className={styles.linkWrapper}>
+          <Link href="/for-you" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
             <div className={`${styles.linkLine} ${(pathname === "/for-you") ? styles.activeLink : ''}`}></div>
             <div className={styles.iconWrapper}>
               <AiOutlineHome className={styles.svg} />
@@ -48,7 +51,7 @@ const Sidebar = () => {
             </div>
           </Link>
 
-          <Link href="library" className={styles.linkWrapper}>
+          <Link href="library" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
             <div className={`${styles.linkLine} ${(pathname === "/library") ? styles.activeLink : ''}`}></div>
             <div className={styles.iconWrapper}>
               <BsBookmark className={styles.svg} />
@@ -81,7 +84,7 @@ const Sidebar = () => {
         </div>
         <div className={styles.bottom}>
 
-          <Link href="/settings" className={styles.linkWrapper}>
+          <Link href="/settings" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
             <div className={`${styles.linkLine} ${(pathname === "/settings") ? styles.activeLink : ''}`}></div>
             <div className={styles.iconWrapper}>
               <SlSettings className={styles.svg} />

@@ -1,7 +1,15 @@
+"use client";
+
 import { IoIosSearch } from "react-icons/io"
 import styles from "./search.module.css";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { useAppDispatch } from "@/lib/hooks";
+import { openSidebar } from "@/lib/features/sidebar/sidebarSlice";
 
 const Search = () => {
+
+  const dispatch = useAppDispatch();
+  
   return (
     <div className={styles.background}>
       <div className={styles.wrapper}>
@@ -15,8 +23,14 @@ const Search = () => {
               id="searchInput"
             />
             <div className={styles.icon}>
-              <IoIosSearch className={styles.svg} />
+              <IoIosSearch />
             </div>
+          </div>
+          <div
+            className={styles.sidebarToggleBtn}
+            onClick={() => dispatch(openSidebar())}
+          >
+            <RxHamburgerMenu />
           </div>
         </div>
       </div>
