@@ -73,6 +73,12 @@
   font-size: 30px;
 }
 
+.btnImg img {
+  background-color: "white";
+  padding: "4px";
+  border-radius: "6px";
+}
+
 .btnText {
   position: absolute;
   left: 50%;

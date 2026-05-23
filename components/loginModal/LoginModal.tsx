@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { onAuthStateChanged } from 'firebase/auth';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FaUserAlt } from 'react-icons/fa';
+import { firebaseLogin, firebaseSignup, FirebaseUserResult, auth, firebaseResetPassword } from "@/lib/firebase"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { logIn } from "@/lib/features/user/userSlice";
+import { logIn, logOut } from "@/lib/features/user/userSlice";
 import { closeModal } from "@/lib/features/modal/modalSlice";
-import { login, signup, FBResult } from "@/lib/firebase"
 import styles from "./loginModal.module.css";
 
 
@@ -20,46 +21,116 @@ const LoginModal: React.FC = () => {
     resetPassword
   }
 
+  const switchSignState = (newState: SignState) => {
+    setSignState(newState);
+    setErrMsg("");
+  }
+
+  const validateEmailAndPassword = (): boolean => {
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+    if (trimmedEmail === "") {
+      setErrMsg("Please enter email");
+      return false;
+    }
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regex.test(trimmedEmail)) {
+      setErrMsg("Please enter valid email");
+      return false;
+    }
+    if (trimmedPassword === "") {
+      setErrMsg("Please enter password");
+      return false;
+    }
+    return true;
+  }
+
+  const userLogin = (uid: string) => {
+    setEmail("");
+    setPassword("");
+    dispatch(logIn(uid));
+    dispatch(closeModal());
+    if (pathname === "/") {
+      router.push("/for-you");
+    }
+  }
+
+  const authenticateUser = async () => {
+    let fbres: FirebaseUserResult;
+    setErrMsg("");
+    if (!validateEmailAndPassword()) {
+      return;
+    }
+    if (signState === SignState.signIn) {
+      fbres = await firebaseLogin(email, password);
+    } else {
+      fbres = await firebaseSignup(email, password);
+    }
+    if (fbres.user) {
+      userLogin(fbres.user.uid);
+    } else {
+      setErrMsg(fbres.message.split('/')[1].replaceAll("-", " "));
+    }
+  }
+
+  const guestSignIn = async () => {
+    let fbres: FirebaseUserResult;
+    setErrMsg("");
+    fbres = await firebaseLogin("test2@email.com", "test2password");
+    if (fbres.user) {
+      userLogin(fbres.user.uid);
+    } else {
+      setErrMsg(fbres.message.split('/')[1].replaceAll("-", " "));
+    }
+  }
+
+  const resetPassword = async () => {
+    let res: string = "";
+    if (!email.trim()) {
+      res = "Please enter email";
+    } else {
+      res = await firebaseResetPassword(email);
+    }
+    if (res) {
+      setErrMsg(res.split('/')[1].replaceAll("-", " "));
+    } else {
+      dispatch(closeModal());
+    }
+  }
+
+  const pathname = usePathname();
   const router = useRouter();
 
   const [signState, setSignState] = useState<SignState>(SignState.signIn);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [errMsg, seterrMsg] = useState<string>("");
+  const [errMsg, setErrMsg] = useState<string>("");
 
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.user);
   const modal = useAppSelector(state => state.modal);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        if (!user || !user.isLoggedIn || (user.firebaseUID != firebaseUser.uid)) {
+          userLogin(firebaseUser.uid);
+        }
+      } else {
+        setEmail("");
+        setPassword("");
+        dispatch(logOut());
+      }
+    })
+
+    return () => unsubscribe(); // Cleanup the observer on unmount
+  }, []);
+
+
   if (!modal.isOpen || user.isLoggedIn) {
     return null;
   }
 
-  const userLogin = () => {
-    dispatch(logIn());
-    dispatch(closeModal());
-    router.push("/for-you");
-  }
-
-  const switchSignState = (newState: SignState) => {
-    setSignState(newState);
-    seterrMsg("");
-  }
-
-  const userAuth = async () => {
-    let fbres: FBResult;
-    seterrMsg("");
-    if (signState === SignState.signIn) {
-      fbres = await login(email, password);
-    } else {
-      fbres = await signup(email, password);
-    }
-    if (fbres.user) {
-      userLogin();
-    } else {
-      seterrMsg(fbres.message.split('/')[1].replaceAll("-", " "));
-    }
-  }
 
   // Use createPortal to render outside the main DOM hierarchy
   return ReactDOM.createPortal(
@@ -85,9 +156,14 @@ const LoginModal: React.FC = () => {
                 id="email"
                 placeholder="Email Address"
                 value={email}
-                onChange={(e) => { setEmail(e.target.value) }}
+                onChange={(e) => {setEmail(e.target.value)}}
               />
-              <button className={styles.btn}>Send reset password link</button>
+              <button
+                className={styles.btn}
+                onClick={resetPassword}
+              >
+                Send reset password link
+              </button>
             </div>
             <div className={styles.forgot}> </div>
             <button
@@ -109,7 +185,7 @@ const LoginModal: React.FC = () => {
               )}
               <button className={styles.btnGoogle}>
                 <div className={styles.btnImg}>
-                  <img src="/google.png" alt="" width="36px" height="36px" style={{ backgroundColor: "white", padding: "4px", borderRadius: "6px" }} />
+                  <img src="/google.png" alt="" width="36px" height="36px" />
                 </div>
                 <div className={styles.btnText}>Sign up with Google</div>
               </button>
@@ -130,7 +206,7 @@ const LoginModal: React.FC = () => {
                 value={password}
                 onChange={(e) => {setPassword(e.target.value)}}
               />
-              <button className={styles.btn} onClick={userAuth}>Sign up</button>
+              <button className={styles.btn} onClick={authenticateUser}>Sign up</button>
             </div>
             <div className={styles.forgot}>
             </div>
@@ -151,7 +227,7 @@ const LoginModal: React.FC = () => {
                   Login failed: {errMsg}
                 </div>
               )}
-              <button className={styles.btnGuest} onClick={userLogin}>
+              <button className={styles.btnGuest} onClick={guestSignIn}>
                 <div className={styles.btnImg}>
                   <FaUserAlt style={{ paddingLeft: "4px", paddingTop: "4px" }} />
                 </div>
@@ -181,7 +257,7 @@ const LoginModal: React.FC = () => {
                 value={password}
                 onChange={(e) => {setPassword(e.target.value)}}
               />
-              <button className={styles.btn} onClick={userAuth}>Login</button>
+              <button className={styles.btn} onClick={authenticateUser}>Login</button>
             </div>
             <div
               className={styles.forgot}
@@ -199,7 +275,7 @@ const LoginModal: React.FC = () => {
         )}
       </div>
     </div >,
-    document.body // Or a specific element like document.getElementById('modal-root')
+    document.body
   );
 };
 

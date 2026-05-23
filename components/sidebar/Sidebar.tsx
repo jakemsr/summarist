@@ -15,6 +15,7 @@ import { FiLogOut } from "react-icons/fi";
 import { openModal } from "@/lib/features/modal/modalSlice";
 import { logOut, UserState } from "@/lib/features/user/userSlice";
 import { SidebarState, closeSidebar } from "@/lib/features/sidebar/sidebarSlice";
+import { firebaseLogout } from "@/lib/firebase";
 
 const Sidebar = () => {
 
@@ -26,6 +27,7 @@ const Sidebar = () => {
 
   const logInOrOut = () => {
     if (user.isLoggedIn) {
+      firebaseLogout();
       dispatch(logOut());
     } else {
       dispatch(openModal());
@@ -34,90 +36,93 @@ const Sidebar = () => {
   }
 
   return (
-    <div className={`${styles.container} ${sidebar.isOpen? styles.containerOpen : ""}`}>
-      <div className={styles.logo}>
-        <img src="/logo.png" alt="" className={styles.img} />
-      </div>
-      <div className={styles.wrapper}>
-        <div className={styles.top}>
+    <>
+      <LoginModal />
 
-          <Link href="/for-you" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
-            <div className={`${styles.linkLine} ${(pathname === "/for-you") ? styles.activeLink : ''}`}></div>
-            <div className={styles.iconWrapper}>
-              <AiOutlineHome className={styles.svg} />
-            </div>
-            <div className={styles.linkText}>
-              For you
-            </div>
-          </Link>
-
-          <Link href="library" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
-            <div className={`${styles.linkLine} ${(pathname === "/library") ? styles.activeLink : ''}`}></div>
-            <div className={styles.iconWrapper}>
-              <BsBookmark className={styles.svg} />
-            </div>
-            <div className={styles.linkText}>
-              My Library
-            </div>
-          </Link>
-
-          <div className={`${styles.linkWrapper} ${styles.linkNotAllowed}`}>
-            <div className={`${styles.linkLine} ${styles.linkNotAllowed}`}></div>
-            <div className={styles.iconWrapper}>
-              <RiBallPenLine className={styles.svg} />
-            </div>
-            <div className={styles.linkText}>
-              Highlights
-            </div>
-          </div>
-
-          <div className={`${styles.linkWrapper} ${styles.linkNotAllowed}`}>
-            <div className={styles.linkLine}></div>
-            <div className={styles.iconWrapper}>
-              <IoIosSearch className={styles.svg} />
-            </div>
-            <div className={styles.linkText}>
-              Search
-            </div>
-          </div>
-
+      <div className={`${styles.container} ${sidebar.isOpen ? styles.containerOpen : ""}`}>
+        <div className={styles.logo}>
+          <img src="/logo.png" alt="" className={styles.img} />
         </div>
-        <div className={styles.bottom}>
+        <div className={styles.wrapper}>
+          <div className={styles.top}>
 
-          <Link href="/settings" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
-            <div className={`${styles.linkLine} ${(pathname === "/settings") ? styles.activeLink : ''}`}></div>
-            <div className={styles.iconWrapper}>
-              <SlSettings className={styles.svg} />
-            </div>
-            <div className={styles.linkText}>
-              Settings
-            </div>
-          </Link>
+            <Link href="/for-you" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
+              <div className={`${styles.linkLine} ${(pathname === "/for-you") ? styles.activeLink : ''}`}></div>
+              <div className={styles.iconWrapper}>
+                <AiOutlineHome className={styles.svg} />
+              </div>
+              <div className={styles.linkText}>
+                For you
+              </div>
+            </Link>
 
-          <div className={`${styles.linkWrapper} ${styles.linkNotAllowed}`}>
-            <div className={`${styles.linkLine} ${styles.linkNotAllowed}`}></div>
-            <div className={styles.iconWrapper}>
-              <RxQuestionMarkCircled className={styles.svg} />
+            <Link href="library" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
+              <div className={`${styles.linkLine} ${(pathname === "/library") ? styles.activeLink : ''}`}></div>
+              <div className={styles.iconWrapper}>
+                <BsBookmark className={styles.svg} />
+              </div>
+              <div className={styles.linkText}>
+                My Library
+              </div>
+            </Link>
+
+            <div className={`${styles.linkWrapper} ${styles.linkNotAllowed}`}>
+              <div className={`${styles.linkLine} ${styles.linkNotAllowed}`}></div>
+              <div className={styles.iconWrapper}>
+                <RiBallPenLine className={styles.svg} />
+              </div>
+              <div className={styles.linkText}>
+                Highlights
+              </div>
             </div>
-            <div className={styles.linkText}>
-              Help &amp; Support
+
+            <div className={`${styles.linkWrapper} ${styles.linkNotAllowed}`}>
+              <div className={styles.linkLine}></div>
+              <div className={styles.iconWrapper}>
+                <IoIosSearch className={styles.svg} />
+              </div>
+              <div className={styles.linkText}>
+                Search
+              </div>
             </div>
+
           </div>
+          <div className={styles.bottom}>
 
-          <div className={styles.linkWrapper} onClick={logInOrOut}>
-            <LoginModal />
-            <div className={styles.linkLine}></div>
-            <div className={styles.iconWrapper}>
-              <FiLogOut className={styles.svg} />
+            <Link href="/settings" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
+              <div className={`${styles.linkLine} ${(pathname === "/settings") ? styles.activeLink : ''}`}></div>
+              <div className={styles.iconWrapper}>
+                <SlSettings className={styles.svg} />
+              </div>
+              <div className={styles.linkText}>
+                Settings
+              </div>
+            </Link>
+
+            <div className={`${styles.linkWrapper} ${styles.linkNotAllowed}`}>
+              <div className={`${styles.linkLine} ${styles.linkNotAllowed}`}></div>
+              <div className={styles.iconWrapper}>
+                <RxQuestionMarkCircled className={styles.svg} />
+              </div>
+              <div className={styles.linkText}>
+                Help &amp; Support
+              </div>
             </div>
-            <div className={styles.linkText}>
-              {user.isLoggedIn ? "Logout" : "Login"}
+
+            <div className={styles.linkWrapper} onClick={logInOrOut}>
+              <div className={styles.linkLine}></div>
+              <div className={styles.iconWrapper}>
+                <FiLogOut className={styles.svg} />
+              </div>
+              <div className={styles.linkText}>
+                {user.isLoggedIn ? "Logout" : "Login"}
+              </div>
             </div>
+
           </div>
-
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
