@@ -1,8 +1,9 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { FirebaseError, initializeApp } from "firebase/app";
 import {
     createUserWithEmailAndPassword,
     getAuth,
+    sendPasswordResetEmail,
     signInWithEmailAndPassword, 
     signOut,
     User} from  "firebase/auth"
@@ -33,13 +34,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-interface FBResult {
+interface FirebaseUserResult {
     user: User | null;
     message: string;
 }
 
-const signup = async (email: string, password: string) : Promise<FBResult> => {
-    const fbres : FBResult = { user: null, message: "" };
+const firebaseSignup = async (email: string, password: string) : Promise<FirebaseUserResult> => {
+    const fbres : FirebaseUserResult = { user: null, message: "" };
     try {
         const res = await createUserWithEmailAndPassword(auth, email, password);
         fbres.user = res.user;
@@ -49,26 +50,46 @@ const signup = async (email: string, password: string) : Promise<FBResult> => {
             email: email
         });
     } catch (error: any) {
-        fbres.message = error.code;
-        console.log(error);
+        if (error instanceof FirebaseError) {
+            fbres.message = error.code;
+        } else {
+            console.error("Non-Firebase error", error)
+        }
     }
     return fbres;
 }
 
-const login = async (email: string, password: string) : Promise<FBResult> => {
-    const fbres : FBResult = { user: null, message: "" };
+const firebaseLogin = async (email: string, password: string) : Promise<FirebaseUserResult> => {
+    const fbres : FirebaseUserResult = { user: null, message: "" };
     try {
         const res = await signInWithEmailAndPassword(auth, email, password);
         fbres.user = res.user;
     } catch (error: any) {
-        fbres.message = error.code;
-        console.log(error);
+        if (error instanceof FirebaseError) {
+            fbres.message = error.code;
+        } else {
+            console.error("Non-Firebase error", error)
+        }
     }
     return fbres;
 }
 
-const logout = () => {
+const firebaseResetPassword = async (email: string) : Promise<string> => {
+    let message = "";
+    try {
+        await sendPasswordResetEmail(auth, email);
+    } catch (error: any) {
+        if (error instanceof FirebaseError) {
+            message = error.code;
+        } else {
+            console.error("Non-Firebase error", error)
+        }
+    }
+    return message;
+}
+
+const firebaseLogout = () => {
     signOut(auth);
 }
 
-export { auth, db, login, signup, logout, type FBResult };
+export { auth, db, firebaseLogin, firebaseSignup, firebaseLogout, firebaseResetPassword, type FirebaseUserResult };
