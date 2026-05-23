@@ -1,0 +1,81 @@
+.bookLink {
+    position: relative;
+    scroll-snap-align: start;
+    padding: 32px 12px 12px;
+    text-decoration: none;
+    border-radius: 4px;
+    max-width: 200px;
+    width: 100%;
+}
+
+.bookImageWrapper {
+    width: 172px;
+    height: 172px;
+    margin-bottom: 8px;
+}
+
+.bookImage {
+    width: 100%;
+    height: 100%;
+}
+
+.bookTitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: #032b41;
+    margin-bottom: 8px;
+}
+
+.bookAuthor {
+    font-size: 14px;
+    color: #6b757b;
+    font-weight: 300;
+    margin-bottom: 8px;
+}
+
+.bookSubTitle {
+    font-size: 14px;
+    color: #394547;
+    margin-bottom: 8px;
+}
+
+.bookDetailsWrapper {
+    display: flex;
+    gap: 8px;    
+}
+
+.bookDetails {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 300;
+    color: #6b757b;
+}
+
+.bookDetailsIcon {
+    display: flex;
+    width: 16px;
+    height: 16px;
+}
+
+.bookDetailsIcon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.bookPill {
+    background-color: #032b41;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: 18px;
+    padding: 0 8px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #fff;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+}
