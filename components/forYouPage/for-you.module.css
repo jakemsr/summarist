@@ -1,3 +1,7 @@
+.skeleton {
+    background-color: #ccc;
+}
+
 .title {
     font-size: 22px;
     font-weight: 700;
@@ -20,6 +24,14 @@
     padding: 24px;
     margin-bottom: 24px;
     gap: 24px;
+}
+
+.selectedBookSkeleton {
+    composes: skeleton;
+    width: calc((100% / 3) * 2);
+    border-radius: 4px;
+    margin-bottom: 24px;
+    height: 188px;
 }
 
 .selectedSubtitle {
@@ -107,9 +119,8 @@
     margin-bottom: 32px;
 }
 
-
 @media (max-width: 1200px) {
-    .selectedBook {
+    .selectedBook, .selectedBookSkeleton {
         width: 100%;
     }
 }

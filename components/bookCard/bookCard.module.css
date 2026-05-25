@@ -1,3 +1,7 @@
+.skeleton {
+    background-color: #ccc;
+}
+
 .bookLink {
     position: relative;
     scroll-snap-align: start;
@@ -19,10 +23,23 @@
     height: 100%;
 }
 
+.bookImageSkeleton {
+    composes: skeleton;
+    width: 100%;
+    height: 100%;
+}
+
 .bookTitle {
     font-size: 16px;
     font-weight: 700;
     color: #032b41;
+    margin-bottom: 8px;
+}
+
+.bookTitleSkeleton {
+    composes: skeleton;
+    height: 24px;
+    width: 140px;
     margin-bottom: 8px;
 }
 
@@ -33,9 +50,23 @@
     margin-bottom: 8px;
 }
 
+.bookAuthorSkeleton {
+    composes: skeleton;
+    height: 20px;
+    width: 80px;
+    margin-bottom: 8px;
+}
+
 .bookSubTitle {
     font-size: 14px;
     color: #394547;
+    margin-bottom: 8px;
+}
+
+.bookSubTitleSkeleton {
+    composes: skeleton;
+    height: 40px;
+    width: 140px;
     margin-bottom: 8px;
 }
 
@@ -51,6 +82,12 @@
     font-size: 14px;
     font-weight: 300;
     color: #6b757b;
+}
+
+.bookDetailsSkeleton {
+    composes: skeleton;
+    height: 20px;
+    width: 60px;
 }
 
 .bookDetailsIcon {
