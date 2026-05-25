@@ -1,0 +1,266 @@
+.skeleton {
+    background-color: #ccc;
+}
+
+.wrapper {
+    display: flex;
+    gap: 16px;
+}
+
+.inner {
+    width: 100%;
+}
+
+.title, .author {
+    color: #032b41;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.title {
+    font-size: 32px;
+}
+
+.titleSkeleton {
+    composes: skeleton;
+    width: 100%;
+    height: 80px;
+    margin-bottom: 16px;
+}
+
+.authorSkeleton {
+    composes: skeleton;
+    width: 100px;
+    height: 20px;
+    margin-bottom: 16px;
+}
+
+.subTitle {
+    font-size: 20px;
+    color: #032b41;
+    margin-bottom: 16px;
+    font-weight: 300;
+}
+
+.subTitleSkeleton {
+    composes: skeleton;
+    width: 100%;
+    height: 24px;
+    margin-bottom: 16px;
+}
+
+.innerWrapper {
+    border-top: 1px solid #e1e7ea;
+    border-bottom: 1px solid #e1e7ea;
+    padding: 16px 0;
+    margin-bottom: 24px;
+}
+
+.innerDescriptionWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 400px;
+    row-gap: 12px;
+}
+
+.innerDescription {
+    display: flex;
+    align-items: center;
+    width: 50%;
+    color: #032b41;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.innerDescriptionSkeleton {
+    composes: skeleton;
+    width: 40%;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.icon {
+    display: flex;
+    height: 24px;
+    width: 24px;
+    margin-right: 4px;
+}
+
+.icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.readBtnWrapper {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.readBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 144px;
+    height: 48px;
+    background-color: #032b41;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    gap: 8px;
+    transition: opacity .2s;
+}
+
+.readBtnSkeleton {
+    composes: skeleton;
+    width: 144px;
+    height: 48px;
+}
+
+.readBtn:hover {
+    opacity: 0.8;
+}
+
+.readIcon {
+    display: flex;
+}
+
+.readIcon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.bookMark {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #0365f2;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 40px;
+    font-size: 18px;
+    transition: color .2s;
+}
+
+.bookMark:hover {
+    color: #044298;
+}
+
+.bookMarkSkeleton {
+    composes: skeleton;
+    width: 100px;
+    height: 24px;
+    margin-bottom: 40px;
+}
+
+.bookMarkIcon {
+    display: flex;
+    width: 20px;
+    height: 20px;
+}
+
+.bookMarkIcon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.secondaryTitle {
+    font-size: 18px;
+    color: #032b41;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.secondaryTitleSkeleton {
+    composes: skeleton;
+    width: 100px;
+    height: 20px;
+    margin-bottom: 16px;
+}
+
+.tagsWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.tag {
+    background-color: #f1f6f4;
+    padding: 0 16px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    cursor: not-allowed;
+    color: #032b41;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: background-color .2s;
+}
+
+.bookDescription {
+    color: #032b41;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.bookDescriptionSkeleton {
+    composes: skeleton;
+    width: 100%;
+    height: 200px
+}
+
+.authorDescription {
+    color: #032b41;
+    line-height: 1.5;
+}
+
+.bookImgWrapper {
+    width: 100%;
+}
+
+.bookImg {
+    height: 300px;
+    width: 300px;
+    min-width: 300px;
+}
+
+.bookImgSkeleton {
+    composes: skeleton;
+    height: 300px;
+    width: 300px;
+    min-width: 300px;
+}
+
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 24px;
+    }
+
+    .subTitle {
+        font-size: 18px;
+    }
+
+    .author, .authorDescription, .bookDescription, .tag {
+        font-size: 14px;
+    }
+
+    .bookMark {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 992px) {
+    .wrapper {
+        flex-direction: column-reverse;
+        gap: 32px;
+    }
+
+    .bookImgWrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+}
