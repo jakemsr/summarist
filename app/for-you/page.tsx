@@ -1,7 +1,10 @@
-import Link from "next/link";
+import { Suspense } from "react";
+import SelectedSkeleton from "@/components/forYouPage/SelectedSkeleton";
+import Selected from "@/components/forYouPage/Selected";
+import RecommendedSkeleton from "@/components/forYouPage/RecommendedSkeleton";
+import Recommended from "@/components/forYouPage/Recommended";
 import { Book, BookStatus } from "@/lib/types"
-import BookCard from "@/components/bookCard/BookCard";
-import styles from "./for-you.module.css";
+import styles from "@/components/forYouPage/for-you.module.css";
 
 
 const getBooks = async (status: BookStatus): Promise<Book[]> => {
@@ -18,44 +21,22 @@ const getBooks = async (status: BookStatus): Promise<Book[]> => {
   return [];
 }
 
-const ForYou = async () => {
-  const selectedBooks = await getBooks("selected");
-  const recommendedBooks = await getBooks("recommended");
-  const suggestedBooks = await getBooks("suggested");
+const Page = async () => {
+  const selectedBooks = getBooks("selected");
+  const recommendedBooks = getBooks("recommended");
+  const suggestedBooks = getBooks("suggested");
 
-  const selectedBook = selectedBooks[0];
 
   return (
     <>
       <div className={styles.title}>
         Selected just for you
       </div>
-      <Link href={`/book/${selectedBook.id}`} className={styles.selectedBook}>
-        <div className={styles.selectedSubtitle}>
-          {selectedBook.subTitle}
-        </div>
-        <div className={styles.selectedLine}></div>
-        <div className={styles.selectedContent}>
-          <figure className={styles.selectedImageWrapper}>
-            <img className={styles.bookImage} src={selectedBook.imageLink} alt="" />
-          </figure>
-          <div className={styles.selectedText}>
-            <div className={styles.selectedTitle}>
-              {selectedBook.title}
-            </div>
-            <div className={styles.selectedAuthor}>
-              {selectedBook.author}
-            </div>
-            <div className={styles.selectedDurationWrapper}>
-              <div className={styles.selectedIcon}>
-                svg
-              </div>
-              <div className={styles.selectedDuration}>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Link>
+
+      <Suspense fallback={<SelectedSkeleton/>}>
+        <Selected books={selectedBooks} />
+      </Suspense>
+
       <div>
         <div className={styles.title}>
           Recommended For You
@@ -63,13 +44,11 @@ const ForYou = async () => {
         <div className={styles.subTitle}>
           We think you'll like these
         </div>
-        <div className={styles.cardsWrapper}>
 
-          {recommendedBooks.map((book) => (
-            <BookCard key={book.id} book={book} />
-          ))}
+        <Suspense fallback={<RecommendedSkeleton />}>
+          <Recommended books={recommendedBooks} />
+        </Suspense>
 
-        </div>
       </div>
 
       <div>
@@ -79,17 +58,15 @@ const ForYou = async () => {
         <div className={styles.subTitle}>
           Browse these books
         </div>
-        <div className={styles.cardsWrapper}>
 
-          {suggestedBooks.map((book) => (
-            <BookCard key={book.id} book={book} />
-          ))}
+        <Suspense fallback={<RecommendedSkeleton />}>
+          <Recommended books={suggestedBooks} />
+        </Suspense>
 
-        </div>
       </div>
 
     </>
   )
 }
 
-export default ForYou
+export default Page
