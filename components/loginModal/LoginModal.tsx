@@ -26,26 +26,36 @@ const LoginModal: React.FC = () => {
     resetPassword
   }
 
+  enum AuthenticationType {
+    none,
+    userLogin,
+    guestLogin,
+    googleLogin,
+    resetPassword
+  }
+
   const switchSignState = (newState: SignState) => {
     setSignState(newState);
     setErrMsg("");
   }
 
   const validateEmailAndPassword = (): boolean => {
-    const trimmedEmail = email.trim();
-    const trimmedPassword = password.trim();
-    if (trimmedEmail === "") {
+    setEmail(email.trim());
+    if (email === "") {
       setErrMsg("Please enter email");
       return false;
     }
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regex.test(trimmedEmail)) {
+    if (!regex.test(email)) {
       setErrMsg("Please enter valid email");
       return false;
     }
-    if (trimmedPassword === "") {
-      setErrMsg("Please enter password");
-      return false;
+    if (signState === SignState.signIn || signState === SignState.signUp) {
+      setPassword(password.trim());
+      if (password === "") {
+        setErrMsg("Please enter password");
+        return false;
+      }
     }
     return true;
   }
@@ -67,11 +77,13 @@ const LoginModal: React.FC = () => {
     if (!validateEmailAndPassword()) {
       return;
     }
+    setIsAuthenticating(AuthenticationType.userLogin);
     if (signState === SignState.signIn) {
       fbres = await firebaseLogin(email, password);
     } else {
       fbres = await firebaseSignup(email, password);
     }
+    setIsAuthenticating(AuthenticationType.none);
     if (fbres.user) {
       userLogin(fbres.user.uid);
     } else {
@@ -82,7 +94,9 @@ const LoginModal: React.FC = () => {
   const guestSignIn = async () => {
     let fbres: FirebaseUserResult;
     setErrMsg("");
+    setIsAuthenticating(AuthenticationType.guestLogin);
     fbres = await firebaseLogin("test2@email.com", "test2password");
+    setIsAuthenticating(AuthenticationType.none);
     if (fbres.user) {
       userLogin(fbres.user.uid);
     } else {
@@ -92,11 +106,12 @@ const LoginModal: React.FC = () => {
 
   const resetPassword = async () => {
     let res: string = "";
-    if (!email.trim()) {
-      res = "Please enter email";
-    } else {
-      res = await firebaseResetPassword(email);
+    if (!validateEmailAndPassword()) {
+      return;
     }
+    setIsAuthenticating(AuthenticationType.resetPassword);
+    res = await firebaseResetPassword(email);
+    setIsAuthenticating(AuthenticationType.none);
     if (res) {
       setErrMsg(res.split('/')[1].replaceAll("-", " "));
     } else {
@@ -111,6 +126,7 @@ const LoginModal: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errMsg, setErrMsg] = useState<string>("");
+  const [isAuthenticating, setIsAuthenticating] = useState<AuthenticationType>(AuthenticationType.none);
 
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.user);
@@ -168,7 +184,11 @@ const LoginModal: React.FC = () => {
                 className={styles.btn}
                 onClick={resetPassword}
               >
-                Send reset password link
+                {isAuthenticating === AuthenticationType.resetPassword ? (
+                  <div className={styles.loader}></div>
+                ) : (
+                  <span>Send reset password link</span>
+                )}
               </button>
             </div>
             <div className={styles.forgot}> </div>
@@ -212,7 +232,13 @@ const LoginModal: React.FC = () => {
                 value={password}
                 onChange={(e) => {setPassword(e.target.value)}}
               />
-              <button className={styles.btn} onClick={authenticateUser}>Sign up</button>
+              <button className={styles.btn} onClick={authenticateUser}>
+                {isAuthenticating === AuthenticationType.userLogin ? (
+                  <div className={styles.loader}></div>
+                ) : (
+                  <span>Sign up</span>
+                )}
+              </button>
             </div>
             <div className={styles.forgot}>
             </div>
@@ -237,7 +263,11 @@ const LoginModal: React.FC = () => {
                 <div className={styles.btnImg}>
                   <FaUserAlt style={{ paddingLeft: "4px", paddingTop: "4px" }} />
                 </div>
-                <div className={styles.btnText}>Login as a Guest</div>
+                {isAuthenticating === AuthenticationType.guestLogin ? (
+                  <div className={styles.loader}></div>
+                ) : (
+                  <div className={styles.btnText}>Login as a Guest</div>
+                )}
               </button>
               <div className={styles.divider}>or</div>
               <button className={styles.btnGoogle}>
@@ -263,7 +293,13 @@ const LoginModal: React.FC = () => {
                 value={password}
                 onChange={(e) => {setPassword(e.target.value)}}
               />
-              <button className={styles.btn} onClick={authenticateUser}>Login</button>
+              <button className={styles.btn} onClick={authenticateUser}>
+                {isAuthenticating === AuthenticationType.userLogin ? (
+                  <div className={styles.loader}></div>
+                ) : (
+                  <span>Login</span>
+                )}
+              </button>
             </div>
             <div
               className={styles.forgot}
