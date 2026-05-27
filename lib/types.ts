@@ -1,4 +1,6 @@
 
+export type UserSubscription = "Basic" | "Premium" | "Premium Plus";
+
 export type BookStatus = "selected" | "recommended" | "suggested";
 
 export interface Book {

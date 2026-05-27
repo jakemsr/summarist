@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { AiOutlineStar } from "react-icons/ai";
 import { LuClock3 } from "react-icons/lu";
+import { useAppSelector } from "@/lib/hooks";
 import { Book } from "@/lib/types";
 import styles from "./bookCard.module.css";
 
@@ -14,6 +15,8 @@ const BookCard = ({ book }: { book: Book }) => {
 
   const [duration, setDuration] = useState<string>("0:00");
 
+  const user = useAppSelector(state => state.user);
+  
   const onLoadedMetadata = () => {
     if (audioRef.current) {
       let seconds = Math.floor(audioRef.current.duration);
@@ -34,7 +37,7 @@ const BookCard = ({ book }: { book: Book }) => {
       </audio>
 
       <Link href={`/book/${book.id}`} className={styles.bookLink}>
-        {book.subscriptionRequired && (
+        {book.subscriptionRequired && user.subscription === "Basic" && (
           <div className={styles.bookPill}>Premium</div>
         )}
         <figure className={styles.bookImageWrapper}>

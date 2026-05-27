@@ -8,6 +8,7 @@ import { AiOutlineRead } from "react-icons/ai";
 import { BsFillBookmarkFill } from "react-icons/bs";
 import { Book } from "@/lib/types";
 import styles from "./bookPage.module.css";
+import { useAppSelector } from "@/lib/hooks";
 
 const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
 
@@ -16,6 +17,8 @@ const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [duration, setDuration] = useState<string>("0:00");
+
+  const user = useAppSelector(state => state.user);
 
   const onLoadedMetadata = () => {
     if (audioRef.current) {
@@ -40,6 +43,7 @@ const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
         <div className={styles.inner}>
           <div className={styles.title}>
             {book.title}
+            {book.subscriptionRequired && user.subscription === "Basic" && " (Premium)"}
           </div>
           <div className={styles.author}>
             {book.author}

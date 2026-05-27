@@ -1,16 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "@/lib/store";
+import type { UserSubscription } from "@/lib/types";
 
 export interface UserState {
     isLoggedIn: boolean;
     firebaseUID: string;
-    isPremium: boolean;
+    subscription: UserSubscription;
+    email: string;
 }
 
 const initialState: UserState = {
     isLoggedIn: false,
     firebaseUID: "",
-    isPremium: false,
+    subscription: "Basic",
+    email: "",
 }
 
 export const userSlice = createSlice ({
@@ -18,12 +21,16 @@ export const userSlice = createSlice ({
     initialState,
     reducers : {
         logIn: (state, action) => {
-            state.isLoggedIn = true;
-            state.firebaseUID = action.payload;
+            state.isLoggedIn = action.payload["isLoggedIn"];
+            state.firebaseUID = action.payload["firebaseUID"];
+            state.subscription = action.payload["subscription"];
+            state.email = action.payload["email"];
         },
         logOut: (state) => {
             state.isLoggedIn = false;
             state.firebaseUID = "";
+            state.subscription = "Basic";
+            state.email = "";
         },
     }
 })
