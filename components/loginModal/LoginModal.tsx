@@ -6,9 +6,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FaUserAlt } from 'react-icons/fa';
-import { firebaseLogin, firebaseSignup, FirebaseUserResult, auth, firebaseResetPassword } from "@/lib/firebase"
+import { auth,
+         FirebaseUserResult,
+         firebaseLogin,
+         firebaseSignup,
+         firebaseResetPassword,
+         firebaseGetUserData } from "@/lib/firebase"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { logIn, logOut } from "@/lib/features/user/userSlice";
+import { logIn, logOut, UserState } from "@/lib/features/user/userSlice";
 import { closeModal } from "@/lib/features/modal/modalSlice";
 import styles from "./loginModal.module.css";
 
@@ -45,10 +50,11 @@ const LoginModal: React.FC = () => {
     return true;
   }
 
-  const userLogin = (uid: string) => {
+  const userLogin = async (uid: string) => {
+    const userState: UserState = await firebaseGetUserData(uid);
     setEmail("");
     setPassword("");
-    dispatch(logIn(uid));
+    dispatch(logIn(userState));
     dispatch(closeModal());
     if (pathname === "/") {
       router.push("/for-you");

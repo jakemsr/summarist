@@ -4,14 +4,21 @@ import {
     createUserWithEmailAndPassword,
     getAuth,
     sendPasswordResetEmail,
-    signInWithEmailAndPassword, 
+    signInWithEmailAndPassword,
     signOut,
-    User} from  "firebase/auth"
+    User
+} from "firebase/auth"
 import {
     addDoc,
     collection,
-    getFirestore } from "firebase/firestore";
+    getDocs,
+    getFirestore,
+    limit,
+    query,
+    where
+} from "firebase/firestore";
 
+import { UserState } from "./features/user/userSlice";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -21,12 +28,12 @@ const appId = process.env.NEXT_PUBLIC_APPID;
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: apiKey,
-  authDomain: "summarist-b5684.firebaseapp.com",
-  projectId: "summarist-b5684",
-  storageBucket: "summarist-b5684.firebasestorage.app",
-  messagingSenderId: "162221631990",
-  appId: appId
+    apiKey: apiKey,
+    authDomain: "summarist-b5684.firebaseapp.com",
+    projectId: "summarist-b5684",
+    storageBucket: "summarist-b5684.firebasestorage.app",
+    messagingSenderId: "162221631990",
+    appId: appId
 };
 
 // Initialize Firebase
@@ -39,15 +46,16 @@ interface FirebaseUserResult {
     message: string;
 }
 
-const firebaseSignup = async (email: string, password: string) : Promise<FirebaseUserResult> => {
-    const fbres : FirebaseUserResult = { user: null, message: "" };
+const firebaseSignup = async (email: string, password: string): Promise<FirebaseUserResult> => {
+    const fbres: FirebaseUserResult = { user: null, message: "" };
     try {
         const res = await createUserWithEmailAndPassword(auth, email, password);
         fbres.user = res.user;
         await addDoc(collection(db, "user"), {
             uid: fbres.user.uid,
             authProvider: "local",
-            email: email
+            email: email,
+            subscription: "Basic"
         });
     } catch (error: any) {
         if (error instanceof FirebaseError) {
@@ -59,8 +67,8 @@ const firebaseSignup = async (email: string, password: string) : Promise<Firebas
     return fbres;
 }
 
-const firebaseLogin = async (email: string, password: string) : Promise<FirebaseUserResult> => {
-    const fbres : FirebaseUserResult = { user: null, message: "" };
+const firebaseLogin = async (email: string, password: string): Promise<FirebaseUserResult> => {
+    const fbres: FirebaseUserResult = { user: null, message: "" };
     try {
         const res = await signInWithEmailAndPassword(auth, email, password);
         fbres.user = res.user;
@@ -74,7 +82,7 @@ const firebaseLogin = async (email: string, password: string) : Promise<Firebase
     return fbres;
 }
 
-const firebaseResetPassword = async (email: string) : Promise<string> => {
+const firebaseResetPassword = async (email: string): Promise<string> => {
     let message = "";
     try {
         await sendPasswordResetEmail(auth, email);
@@ -92,4 +100,30 @@ const firebaseLogout = () => {
     signOut(auth);
 }
 
-export { auth, db, firebaseLogin, firebaseSignup, firebaseLogout, firebaseResetPassword, type FirebaseUserResult };
+const firebaseGetUserData = async (uid: string): Promise<UserState> => {
+    const userState: UserState = { isLoggedIn: true, firebaseUID: uid, subscription: "Basic", email: "" };
+    try {
+        const q = await query(collection(db, "user"), where("uid", "==", uid), limit(1));
+        const { docs } = await getDocs(q);
+        const userData = docs[0].data();
+        userState.subscription = userData["subscription"];
+        userState.email = userData["email"];
+    } catch (error: any) {
+        if (error instanceof FirebaseError) {
+            console.error("Firebase error", error.code)
+        } else {
+            console.error("Non-Firebase error", error)
+        }
+    }
+
+    return userState;
+}
+
+export { auth,
+         db,
+         firebaseLogin,
+         firebaseSignup,
+         firebaseLogout,
+         firebaseResetPassword,
+         firebaseGetUserData,
+         type FirebaseUserResult };
