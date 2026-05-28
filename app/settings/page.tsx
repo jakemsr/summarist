@@ -3,8 +3,12 @@
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { openModal } from "@/lib/features/modal/modalSlice";
 import styles from "./settings.module.css";
+import { useRouter } from "next/navigation";
 
 const Settings = () => {
+
+  const router = useRouter();
+  
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.user);
 
@@ -16,6 +20,15 @@ const Settings = () => {
           <div className={styles.content}>
             <div className={styles.subTitle}>Your Subscription plan</div>
             <div className={styles.settingsText}>{user.subscription}</div>
+            {user.subscription === "Basic" && (
+              <button
+                className="btn"
+                style={{ width: "fit-content" }}
+                onClick={() => router.push("/choose-plan")}
+              >
+                Upgrade to Premium
+              </button>
+            )}
           </div>
           <div className={styles.content}>
             <div className={styles.subTitle}>Email</div>
