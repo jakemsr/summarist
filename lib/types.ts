@@ -1,3 +1,18 @@
+import { User } from "firebase/auth";
+
+
+export interface FirebaseUserResult {
+    user: User | null;
+    message: string;
+}
+
+export enum AuthenticationType {
+    none,
+    userLogin,
+    guestLogin,
+    googleLogin,
+    resetPassword
+}
 
 export type UserSubscription = "Basic" | "Premium" | "Premium Plus";
 

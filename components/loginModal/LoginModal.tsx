@@ -3,15 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { usePathname, useRouter } from 'next/navigation';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FaUserAlt } from 'react-icons/fa';
+import { AuthenticationType, FirebaseUserResult } from "@/lib/types";
 import { auth,
-         FirebaseUserResult,
          firebaseLogin,
          firebaseSignup,
          firebaseResetPassword,
-         firebaseGetUserData } from "@/lib/firebase"
+         firebaseGetUserData} from "@/lib/firebase"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { logIn, logOut, UserState } from "@/lib/features/user/userSlice";
 import { closeModal } from "@/lib/features/modal/modalSlice";
@@ -23,14 +23,6 @@ const LoginModal: React.FC = () => {
   enum SignState {
     signIn,
     signUp,
-    resetPassword
-  }
-
-  enum AuthenticationType {
-    none,
-    userLogin,
-    guestLogin,
-    googleLogin,
     resetPassword
   }
 
@@ -60,8 +52,8 @@ const LoginModal: React.FC = () => {
     return true;
   }
 
-  const userLogin = async (uid: string) => {
-    const userState: UserState = await firebaseGetUserData(uid);
+  const userLogin = async (user: User) => {
+    const userState: UserState = await firebaseGetUserData(user);
     setEmail("");
     setPassword("");
     dispatch(logIn(userState));
@@ -69,36 +61,31 @@ const LoginModal: React.FC = () => {
     if (pathname === "/") {
       router.push("/for-you");
     }
+    setSignState(SignState.signIn);
   }
 
-  const authenticateUser = async () => {
-    let fbres: FirebaseUserResult;
+  const authenticateUser = async (authType: AuthenticationType) => {
+    let fbres: FirebaseUserResult = { user: null, message: "" };
     setErrMsg("");
-    if (!validateEmailAndPassword()) {
-      return;
+    if (authType === AuthenticationType.userLogin) {
+      if (!validateEmailAndPassword()) {
+        return;
+      }
     }
-    setIsAuthenticating(AuthenticationType.userLogin);
+    setIsAuthenticating(authType);
     if (signState === SignState.signIn) {
-      fbres = await firebaseLogin(email, password);
-    } else {
-      fbres = await firebaseSignup(email, password);
+      if (authType === AuthenticationType.guestLogin) {
+        fbres = await firebaseLogin(authType, "test2@email.com", "test2password");
+      } else {
+        fbres = await firebaseLogin(authType, email, password);
+      }
+    } else if (signState === SignState.signUp) {
+      fbres = await firebaseSignup(authType, email, password);
     }
     setIsAuthenticating(AuthenticationType.none);
     if (fbres.user) {
-      userLogin(fbres.user.uid);
-    } else {
-      setErrMsg(fbres.message.split('/')[1].replaceAll("-", " "));
-    }
-  }
-
-  const guestSignIn = async () => {
-    let fbres: FirebaseUserResult;
-    setErrMsg("");
-    setIsAuthenticating(AuthenticationType.guestLogin);
-    fbres = await firebaseLogin("test2@email.com", "test2password");
-    setIsAuthenticating(AuthenticationType.none);
-    if (fbres.user) {
-      userLogin(fbres.user.uid);
+      // let useEffect catch onAuthStateChanged and call userLogin
+      //userLogin(fbres.user);
     } else {
       setErrMsg(fbres.message.split('/')[1].replaceAll("-", " "));
     }
@@ -116,6 +103,7 @@ const LoginModal: React.FC = () => {
       setErrMsg(res.split('/')[1].replaceAll("-", " "));
     } else {
       dispatch(closeModal());
+      setSignState(SignState.signIn);
     }
   }
 
@@ -136,7 +124,7 @@ const LoginModal: React.FC = () => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         if (!user || !user.isLoggedIn || (user.firebaseUID != firebaseUser.uid)) {
-          userLogin(firebaseUser.uid);
+          userLogin(firebaseUser);
         }
       } else {
         setEmail("");
@@ -209,11 +197,15 @@ const LoginModal: React.FC = () => {
                   Sign up failed: {errMsg}
                 </div>
               )}
-              <button className={styles.btnGoogle}>
+              <button className={styles.btnGoogle} onClick={() => authenticateUser(AuthenticationType.googleLogin)}>
                 <div className={styles.btnImg}>
-                  <img src="/google.png" alt="" width="36px" height="36px" />
+                  <img src="/google.png" alt="" width="36px" height="36px" style={{ backgroundColor: "white", padding: "4px", borderRadius: "6px" }} />
                 </div>
-                <div className={styles.btnText}>Sign up with Google</div>
+                {isAuthenticating === AuthenticationType.googleLogin ? (
+                  <div className={styles.loader}></div>
+                ) : (
+                  <div className={styles.btnText}>Sign up with Google</div>
+                )}
               </button>
               <div className={styles.divider}>or</div>
               <input
@@ -232,7 +224,7 @@ const LoginModal: React.FC = () => {
                 value={password}
                 onChange={(e) => {setPassword(e.target.value)}}
               />
-              <button className={styles.btn} onClick={authenticateUser}>
+              <button className={styles.btn} onClick={() => authenticateUser(AuthenticationType.userLogin)}>
                 {isAuthenticating === AuthenticationType.userLogin ? (
                   <div className={styles.loader}></div>
                 ) : (
@@ -259,7 +251,7 @@ const LoginModal: React.FC = () => {
                   Login failed: {errMsg}
                 </div>
               )}
-              <button className={styles.btnGuest} onClick={guestSignIn}>
+              <button className={styles.btnGuest} onClick={() => authenticateUser(AuthenticationType.guestLogin)}>
                 <div className={styles.btnImg}>
                   <FaUserAlt style={{ paddingLeft: "4px", paddingTop: "4px" }} />
                 </div>
@@ -270,11 +262,15 @@ const LoginModal: React.FC = () => {
                 )}
               </button>
               <div className={styles.divider}>or</div>
-              <button className={styles.btnGoogle}>
+              <button className={styles.btnGoogle} onClick={() => authenticateUser(AuthenticationType.googleLogin)}>
                 <div className={styles.btnImg}>
                   <img src="/google.png" alt="" width="36px" height="36px" style={{ backgroundColor: "white", padding: "4px", borderRadius: "6px" }} />
                 </div>
-                <div className={styles.btnText}>Login with Google</div>
+                {isAuthenticating === AuthenticationType.googleLogin ? (
+                  <div className={styles.loader}></div>
+                ) : (
+                  <div className={styles.btnText}>Login with Google</div>
+                )}
               </button>
               <div className={styles.divider}>or</div>
               <input
@@ -293,7 +289,7 @@ const LoginModal: React.FC = () => {
                 value={password}
                 onChange={(e) => {setPassword(e.target.value)}}
               />
-              <button className={styles.btn} onClick={authenticateUser}>
+              <button className={styles.btn} onClick={() => authenticateUser(AuthenticationType.userLogin)}>
                 {isAuthenticating === AuthenticationType.userLogin ? (
                   <div className={styles.loader}></div>
                 ) : (
