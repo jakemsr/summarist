@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { collection, addDoc, onSnapshot } from 'firebase/firestore';
+import { FirebaseError } from '@firebase/util';
 import { BsFileEarmarkTextFill } from "react-icons/bs";
 import { RiPlantFill } from "react-icons/ri";
 import { FaHandshake } from "react-icons/fa";
+import { auth, db } from "@/lib/firebase";
 import FAQAccordion from "@/components/faqAccordian/FAQAccordian"
-import styles from "./choosePlan.module.css"
 import Footer from "@/components/footer/Footer";
+import styles from "./choosePlan.module.css"
 
 const faqs = [
   {
@@ -35,7 +38,56 @@ const ChoosePlan = () => {
     plus
   }
 
+  const goToPayments = async () => {
+
+    setIsPaying(true);
+
+    const price = activePlan === Plans.plus ? "price_1TdpK7BFuLNB5vaucfYQkVvy" : "price_1TdpJEBFuLNB5vaud9HTPFIn";
+
+    if (!auth.currentUser) {
+      return;
+    }
+
+    const docRef = await addDoc(
+      collection(
+        db,
+        "customers",
+        auth.currentUser.uid,
+        "checkout_sessions"
+      ),
+      {
+        price: price,
+        success_url: window.location.origin,
+        cancel_url: window.location.origin,
+      }
+    );
+
+    interface StripeData {
+      error: FirebaseError,
+      url: string
+    }
+
+    // Wait for the CheckoutSession to get attached by the extension
+    onSnapshot(docRef, (snap) => {
+      const { error, url } = snap.data() as StripeData;
+      if (error) {
+        // Show an error to your customer and
+        // inspect your Cloud Function logs in the Firebase console.
+        alert(`An error occured: ${error.message}`);
+        setIsPaying(false);
+      }
+      if (url) {
+        // We have a Stripe Checkout URL, let's redirect.
+        window.location.assign(url);
+      }
+    });
+    // let the spinner go because redirection takes a moment and
+    // isPaying will be set to false by default on the next render
+    //setIsPaying(false);
+  }
+
   const [activePlan, setActivePlan] = useState<Plans>(Plans.plus);
+  const [isPaying, setIsPaying] = useState<boolean>(false);
 
   return (
     <div className={styles.plan}>
@@ -137,12 +189,20 @@ const ChoosePlan = () => {
 
           <div className={styles.planCardCta}>
             <span className={styles.btnWrapper}>
-              <button className="btn" style={{ width: "300px" }}>
-                {activePlan === Plans.plus ? (
-                  <span>Start your 7-day free trial</span>
+              <button
+                className="btn"
+                style={{ width: "300px" }}
+                onClick={goToPayments}
+              >
+                {isPaying === true ? (
+                  <div className={styles.loader}></div>
                 ) : (
-                  <span>Start your first month</span>
-                )}
+                  activePlan === Plans.plus ? (
+                    <span>Start your 7-day free trial</span>
+                  ) : (
+                    <span>Start your first month</span>
+                  )
+              )}
               </button>
             </span>
             <div className={styles.disclaimer}>

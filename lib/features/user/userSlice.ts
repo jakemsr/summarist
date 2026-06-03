@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "@/lib/store";
-import type { UserSubscription } from "@/lib/types";
+import { UserSubscription } from "@/lib/types";
 
 export interface UserState {
     isLoggedIn: boolean;
@@ -12,7 +12,7 @@ export interface UserState {
 const initialState: UserState = {
     isLoggedIn: false,
     firebaseUID: "",
-    subscription: "Basic",
+    subscription: UserSubscription.basic,
     email: "",
 }
 
@@ -29,7 +29,7 @@ export const userSlice = createSlice ({
         logOut: (state) => {
             state.isLoggedIn = false;
             state.firebaseUID = "";
-            state.subscription = "Basic";
+            state.subscription = UserSubscription.basic;
             state.email = "";
         },
     }
