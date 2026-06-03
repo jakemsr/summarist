@@ -48,6 +48,8 @@ const ChoosePlan = () => {
       return;
     }
 
+    const returnURL = window.location.origin + "/for-you";
+
     const docRef = await addDoc(
       collection(
         db,
@@ -57,8 +59,8 @@ const ChoosePlan = () => {
       ),
       {
         price: price,
-        success_url: window.location.origin,
-        cancel_url: window.location.origin,
+        success_url: returnURL,
+        cancel_url: returnURL,
       }
     );
 
