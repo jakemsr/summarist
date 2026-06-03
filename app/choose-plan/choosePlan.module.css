@@ -183,6 +183,20 @@
     text-align: center;
 }
 
+.loader {
+  border: 4px solid #fff; /* ring */
+  border-top: 4px solid transparent; /* spinning part */
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 @media (max-width: 768px) {
     .title {

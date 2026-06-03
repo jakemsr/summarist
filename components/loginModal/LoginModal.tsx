@@ -7,11 +7,12 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FaUserAlt } from 'react-icons/fa';
 import { AuthenticationType, FirebaseUserResult } from "@/lib/types";
-import { auth,
-         firebaseLogin,
-         firebaseSignup,
-         firebaseResetPassword,
-         firebaseGetUserData} from "@/lib/firebase"
+import {
+  auth,
+  firebaseAuthenticate,
+  firebaseResetPassword,
+  firebaseGetUserData
+} from "@/lib/firebase"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { logIn, logOut, UserState } from "@/lib/features/user/userSlice";
 import { closeModal } from "@/lib/features/modal/modalSlice";
@@ -67,20 +68,25 @@ const LoginModal: React.FC = () => {
   const authenticateUser = async (authType: AuthenticationType) => {
     let fbres: FirebaseUserResult = { user: null, message: "" };
     setErrMsg("");
-    if (authType === AuthenticationType.userLogin) {
+    if (authType === AuthenticationType.userLogin || authType === AuthenticationType.userSignup) {
       if (!validateEmailAndPassword()) {
         return;
       }
     }
     setIsAuthenticating(authType);
-    if (signState === SignState.signIn) {
-      if (authType === AuthenticationType.guestLogin) {
-        fbres = await firebaseLogin(authType, "test2@email.com", "test2password");
-      } else {
-        fbres = await firebaseLogin(authType, email, password);
-      }
-    } else if (signState === SignState.signUp) {
-      fbres = await firebaseSignup(authType, email, password);
+    switch (authType) {
+      case AuthenticationType.googleLogin:
+      case AuthenticationType.userLogin:
+      case AuthenticationType.userSignup:
+        fbres = await firebaseAuthenticate(authType, email, password);
+        break;
+      case AuthenticationType.guestLogin:
+        fbres = await firebaseAuthenticate(authType, "test2@email.com", "test2password");
+        break;
+      case AuthenticationType.resetPassword:
+      // handled elsewhere
+      default:
+        break;
     }
     setIsAuthenticating(AuthenticationType.none);
     if (fbres.user) {
@@ -166,7 +172,7 @@ const LoginModal: React.FC = () => {
                 id="email"
                 placeholder="Email Address"
                 value={email}
-                onChange={(e) => {setEmail(e.target.value)}}
+                onChange={(e) => { setEmail(e.target.value) }}
               />
               <button
                 className={styles.btn}
@@ -214,7 +220,7 @@ const LoginModal: React.FC = () => {
                 id="email"
                 placeholder="Email Address"
                 value={email}
-                onChange={(e) => {setEmail(e.target.value)}}
+                onChange={(e) => { setEmail(e.target.value) }}
               />
               <input
                 type="password"
@@ -222,10 +228,10 @@ const LoginModal: React.FC = () => {
                 id="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => {setPassword(e.target.value)}}
+                onChange={(e) => { setPassword(e.target.value) }}
               />
-              <button className={styles.btn} onClick={() => authenticateUser(AuthenticationType.userLogin)}>
-                {isAuthenticating === AuthenticationType.userLogin ? (
+              <button className={styles.btn} onClick={() => authenticateUser(AuthenticationType.userSignup)}>
+                {isAuthenticating === AuthenticationType.userSignup ? (
                   <div className={styles.loader}></div>
                 ) : (
                   <span>Sign up</span>
@@ -279,7 +285,7 @@ const LoginModal: React.FC = () => {
                 id="email"
                 placeholder="Email Address"
                 value={email}
-                onChange={(e) => {setEmail(e.target.value)}}
+                onChange={(e) => { setEmail(e.target.value) }}
               />
               <input
                 type="password"
@@ -287,7 +293,7 @@ const LoginModal: React.FC = () => {
                 id="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => {setPassword(e.target.value)}}
+                onChange={(e) => { setPassword(e.target.value) }}
               />
               <button className={styles.btn} onClick={() => authenticateUser(AuthenticationType.userLogin)}>
                 {isAuthenticating === AuthenticationType.userLogin ? (

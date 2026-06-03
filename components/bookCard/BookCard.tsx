@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AiOutlineStar } from "react-icons/ai";
 import { LuClock3 } from "react-icons/lu";
 import { useAppSelector } from "@/lib/hooks";
-import { Book } from "@/lib/types";
+import { Book, UserSubscription } from "@/lib/types";
 import styles from "./bookCard.module.css";
 
 
@@ -37,7 +37,7 @@ const BookCard = ({ book }: { book: Book }) => {
       </audio>
 
       <Link href={`/book/${book.id}`} className={styles.bookLink}>
-        {book.subscriptionRequired && user.subscription === "Basic" && (
+        {book.subscriptionRequired && user.subscription === UserSubscription.basic && (
           <div className={styles.bookPill}>Premium</div>
         )}
         <figure className={styles.bookImageWrapper}>

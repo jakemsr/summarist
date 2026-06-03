@@ -1,9 +1,10 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { UserSubscription } from "@/lib/types";
 import { openModal } from "@/lib/features/modal/modalSlice";
-import styles from "./settings.module.css";
 import { useRouter } from "next/navigation";
+import styles from "./settings.module.css";
 
 const Settings = () => {
 
@@ -20,7 +21,7 @@ const Settings = () => {
           <div className={styles.content}>
             <div className={styles.subTitle}>Your Subscription plan</div>
             <div className={styles.settingsText}>{user.subscription}</div>
-            {user.subscription === "Basic" && (
+            {user.subscription === UserSubscription.basic && (
               <button
                 className="btn"
                 style={{ width: "fit-content" }}

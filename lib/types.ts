@@ -10,11 +10,16 @@ export enum AuthenticationType {
     none,
     userLogin,
     guestLogin,
+    userSignup,
     googleLogin,
     resetPassword
 }
 
-export type UserSubscription = "Basic" | "Premium" | "Premium Plus";
+export enum UserSubscription {
+    basic = "Basic",
+    premium = "premium",
+    plus = "premium-plus"
+}
 
 export type BookStatus = "selected" | "recommended" | "suggested";
 

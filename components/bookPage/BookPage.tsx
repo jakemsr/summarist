@@ -6,7 +6,7 @@ import { GoClock } from "react-icons/go";
 import { HiOutlineLightBulb, HiOutlineMicrophone } from "react-icons/hi";
 import { AiOutlineRead } from "react-icons/ai";
 import { BsFillBookmarkFill } from "react-icons/bs";
-import { Book } from "@/lib/types";
+import { Book, UserSubscription } from "@/lib/types";
 import styles from "./bookPage.module.css";
 import { useAppSelector } from "@/lib/hooks";
 
@@ -43,7 +43,7 @@ const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
         <div className={styles.inner}>
           <div className={styles.title}>
             {book.title}
-            {book.subscriptionRequired && user.subscription === "Basic" && " (Premium)"}
+            {book.subscriptionRequired && user.subscription === UserSubscription.basic && " (Premium)"}
           </div>
           <div className={styles.author}>
             {book.author}
