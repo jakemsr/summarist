@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io"
 import { RxHamburgerMenu } from "react-icons/rx";
+import { AiOutlineClose } from "react-icons/ai";
 import { useAppDispatch } from "@/lib/hooks";
 import { Book } from "@/lib/types";
 import { openSidebar } from "@/lib/features/sidebar/sidebarSlice";
-import styles from "./search.module.css";
 import SearchBook from "./SearchBook";
-import { AiOutlineClose } from "react-icons/ai";
+import styles from "./search.module.css";
 
 
 const Search = () => {
@@ -17,7 +17,7 @@ const Search = () => {
 
   const [inputValue, setInputValue] = useState<string>("");
   const [debouncedValue, setDebouncedValue] = useState<string>("");
-  const [books, setBooks] = useState<Book[]>(new Array(4).fill(0));
+  const [books, setBooks] = useState<Book[]>([]);
   const [showBooks, setShowBooks] = useState<boolean>(false);
   const [loadingBooks, setLoadingBooks] = useState<boolean>(false);
 
@@ -52,6 +52,7 @@ const Search = () => {
     }
   }, [debouncedValue]);
 
+  
   return (
     <div className={styles.background} onClick={() => setInputValue("")}>
 
