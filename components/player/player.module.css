@@ -126,14 +126,85 @@
     font-size: 14px;
 }
 
+/* Input range - chrome and safari */
 .progressBar {
+    --range-progress: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    background: rgb(109, 120, 125);
     border-radius: 8px;
     height: 4px;
     max-width: 300px;
     width: 100%;
     cursor: pointer;
     outline: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+}
+
+/* Input range - firefox */
+.progressBar::-moz-range-track {
+    position: relative;
+    background: rgb(109, 120, 125);
+    border-radius: 8px;
+    height: 4px;
+    max-width: 300px;
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+}
+
+/* played progress length - Chrome & safari*/
+.progressBar::before {
+    content: '';
+    height: 4px;
+    background: rgb(43, 217, 124);
+    width: var(--range-progress);
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* played progress length - firefox */
+.progressBar::-moz-range-progress {
+    background: rgb(43, 217, 124);
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+    height: 4px;
+}
+
+/* slider thumb - chrome and safari */
+.progressBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background-color: #fff;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+
+/* dragging thumb - chrome and safari */
+.progressBar:active::-webkit-slider-thumb {
+  transform: scale(1.2);
+  background-color: #fff;
+}
+
+/* slider thumb - firefox */
+.progressBar::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  border: transparent;
+  position: relative;
+}
+
+/* dragging thumb - firefox */
+.progressBar:active::-moz-range-thumb {
+  transform: scale(1.2);
+  background-color: #fff;
 }
