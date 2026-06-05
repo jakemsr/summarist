@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Book } from "@/lib/types";
 import PlayerPage from "@/components/player/PlayerPage";
+import styles from "@/components/player/player.module.css";
 
 
 const getBook = async (bookId: string): Promise<Book> => {
@@ -23,7 +24,7 @@ const Player = async ({ params }: { params: Promise<{ bookId: string }> }) => {
   const book = getBook(bookId);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className={styles.loaderCenter}><div className={styles.loader}></div></div>}>
       <PlayerPage bookPromise={book} />
     </Suspense>
   )

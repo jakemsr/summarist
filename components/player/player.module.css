@@ -208,3 +208,33 @@
   transform: scale(1.2);
   background-color: #fff;
 }
+
+.loaderCenter {
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 160px);
+}
+
+.loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 8px solid #032b41;
+    border-top: 8px solid transparent;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
