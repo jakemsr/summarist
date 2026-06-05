@@ -41,3 +41,10 @@ export interface Book {
     bookDescription: string;
     authorDescription: string;
 }
+
+export enum FontSize {
+    small,
+    medium,
+    large,
+    xlarge
+}

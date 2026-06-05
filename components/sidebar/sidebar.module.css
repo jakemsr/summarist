@@ -34,6 +34,10 @@
     overflow-y: auto;
 }
 
+.wrapperPlayer {
+    height: calc(-140px + 100vh);
+}
+
 .top {
     flex: 1;
     margin-top: 40px;
@@ -45,10 +49,13 @@
     height: 56px;
     color: #032b41;
     margin-bottom: 8px;
+}
+
+.linkWrapper:not(.linkNotAllowed, .fontSizeWrapper) {
     cursor: pointer;
 }
 
-.linkWrapper:hover {
+.linkWrapper:not(.linkNotAllowed, .fontSizeWrapper):hover {
     background-color: #edeceb;
 }
 
@@ -58,6 +65,12 @@
 
 .linkNotAllowed {
     cursor: not-allowed;
+}
+
+.fontSizeWrapper {
+    display: flex;
+    margin-left: 24px;
+    gap: 8px;
 }
 
 .linkLine {
@@ -86,6 +99,40 @@
 .linkText {
     font-size: 16px;
 }
+
+.fontSizeIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+}
+
+.fontSizeIconSmall {
+    width: 20px;
+    height: 20px;
+}
+
+.fontSizeIconMedium {
+    width: 24px;
+    height: 24px;
+}
+
+.fontSizeIconLarge {
+    width: 28px;
+    height: 28px;
+}
+
+.fontSizeIconXLarge {
+    width: 32px;
+    height: 32px;
+}
+
+.fontSizeIconActive {
+    border-bottom: 3px solid #2bd97c;
+}
+
 
 @media (max-width: 768px) {
     .container {

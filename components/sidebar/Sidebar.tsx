@@ -1,21 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AiOutlineHome } from "react-icons/ai";
 import { BsBookmark } from "react-icons/bs";
 import { RiBallPenLine } from "react-icons/ri"
 import { IoIosSearch } from "react-icons/io"
-import LoginModal from "@/components/loginModal/LoginModal";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import styles from "./sidebar.module.css";
-import { usePathname } from "next/navigation";
 import { SlSettings } from "react-icons/sl";
 import { RxQuestionMarkCircled } from "react-icons/rx";
 import { FiLogOut } from "react-icons/fi";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { FontSize } from "@/lib/types";
 import { openModal } from "@/lib/features/modal/modalSlice";
 import { logOut, UserState } from "@/lib/features/user/userSlice";
-import { SidebarState, closeSidebar } from "@/lib/features/sidebar/sidebarSlice";
+import { SidebarState, closeSidebar, setFontSize } from "@/lib/features/sidebar/sidebarSlice";
 import { firebaseLogout } from "@/lib/firebase";
+import LoginModal from "@/components/loginModal/LoginModal";
+import AaComponent from "./AaComponent";
+import styles from "./sidebar.module.css";
+
 
 const Sidebar = ({player}: {player: boolean}) => {
 
@@ -43,7 +46,7 @@ const Sidebar = ({player}: {player: boolean}) => {
         <div className={styles.logo}>
           <img src="/logo.png" alt="" className={styles.img} />
         </div>
-        <div className={styles.wrapper}>
+        <div className={`${styles.wrapper} ${player ? styles.wrapperPlayer : ""}`}>
           <div className={styles.top}>
 
             <Link href="/for-you" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
@@ -56,7 +59,7 @@ const Sidebar = ({player}: {player: boolean}) => {
               </div>
             </Link>
 
-            <Link href="library" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
+            <Link href="/library" className={styles.linkWrapper} onClick={() => dispatch(closeSidebar())}>
               <div className={`${styles.linkLine} ${(pathname === "/library") ? styles.activeLink : ''}`}></div>
               <div className={styles.iconWrapper}>
                 <BsBookmark className={styles.svg} />
@@ -85,6 +88,31 @@ const Sidebar = ({player}: {player: boolean}) => {
                 Search
               </div>
             </div>
+
+            {player && (
+              <div className={`${styles.linkWrapper} ${styles.fontSizeWrapper}`}>
+                <div className={`${styles.linkText} ${styles.fontSizeIcon} ${sidebar.fontSize === FontSize.small && styles.fontSizeIconActive}`}
+                  onClick={() => dispatch(setFontSize(FontSize.small))}
+                >
+                  <AaComponent className={styles.fontSizeIconSmall} />
+                </div>
+                <div className={`${styles.linkText} ${styles.fontSizeIcon} ${sidebar.fontSize === FontSize.medium && styles.fontSizeIconActive}`}
+                  onClick={() => dispatch(setFontSize(FontSize.medium))}
+                >
+                  <AaComponent className={styles.fontSizeIconMedium} />
+                </div>
+                <div className={`${styles.linkText} ${styles.fontSizeIcon} ${sidebar.fontSize === FontSize.large && styles.fontSizeIconActive}`}
+                  onClick={() => dispatch(setFontSize(FontSize.large))}
+                >
+                  <AaComponent className={styles.fontSizeIconLarge} />
+                </div>
+                <div className={`${styles.linkText} ${styles.fontSizeIcon} ${sidebar.fontSize === FontSize.xlarge && styles.fontSizeIconActive}`}
+                  onClick={() => dispatch(setFontSize(FontSize.xlarge))}
+                >
+                  <AaComponent className={styles.fontSizeIconXLarge} />
+                </div>
+              </div>
+            )}
 
           </div>
           <div className={styles.bottom}>
