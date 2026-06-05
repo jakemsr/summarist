@@ -1,24 +1,42 @@
 "use client";
 
 import { use, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { FaRegStar } from "react-icons/fa";
 import { GoClock } from "react-icons/go";
 import { HiOutlineLightBulb, HiOutlineMicrophone } from "react-icons/hi";
 import { AiOutlineRead } from "react-icons/ai";
 import { BsFillBookmarkFill } from "react-icons/bs";
 import { Book, UserSubscription } from "@/lib/types";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { openModal } from "@/lib/features/modal/modalSlice";
 import styles from "./bookPage.module.css";
-import { useAppSelector } from "@/lib/hooks";
+
 
 const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
 
   const book = use(bookPromise);
+
+  const router = useRouter();
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [duration, setDuration] = useState<string>("0:00");
 
   const user = useAppSelector(state => state.user);
+  const dispatch = useAppDispatch();
+
+  const handlePlayer = () => {
+    if (!user.isLoggedIn) {
+      dispatch(openModal());
+    } else {
+      if (book.subscriptionRequired && user.subscription === UserSubscription.basic) {
+        router.push("/choose-plan");
+      } else {
+        router.push(`/player/${book.id}`);
+      }
+    }
+  }
 
   const onLoadedMetadata = () => {
     if (audioRef.current) {
@@ -84,13 +102,13 @@ const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
           </div>
 
           <div className={styles.readBtnWrapper}>
-            <button className={styles.readBtn}>
+            <button className={styles.readBtn} onClick={handlePlayer}>
               <div className={styles.readIcon}>
                 <AiOutlineRead />
               </div>
               <div>Read</div>
             </button>
-            <button className={styles.readBtn}>
+            <button className={styles.readBtn} onClick={handlePlayer}>
               <div className={styles.readIcon}>
                 <HiOutlineMicrophone />
               </div>
