@@ -5,5 +5,5 @@ export default function Layout({
 }: {
   children: React.ReactNode
 }) {
-  return <PagesLayout>{children}</PagesLayout>
+  return <PagesLayout player={false}>{children}</PagesLayout>
 }

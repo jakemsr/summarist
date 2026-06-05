@@ -17,7 +17,7 @@ import { logOut, UserState } from "@/lib/features/user/userSlice";
 import { SidebarState, closeSidebar } from "@/lib/features/sidebar/sidebarSlice";
 import { firebaseLogout } from "@/lib/firebase";
 
-const Sidebar = () => {
+const Sidebar = ({player}: {player: boolean}) => {
 
   const pathname = usePathname();
 
