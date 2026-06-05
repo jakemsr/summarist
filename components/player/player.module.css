@@ -176,37 +176,37 @@
 
 /* slider thumb - chrome and safari */
 .progressBar::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  background-color: #fff;
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  position: relative;
+    -webkit-appearance: none;
+    background-color: #fff;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    position: relative;
 }
 
 /* dragging thumb - chrome and safari */
 .progressBar:active::-webkit-slider-thumb {
-  transform: scale(1.2);
-  background-color: #fff;
+    transform: scale(1.2);
+    background-color: #fff;
 }
 
 /* slider thumb - firefox */
 .progressBar::-moz-range-thumb {
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  background: #fff;
-  cursor: pointer;
-  border: transparent;
-  position: relative;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    border: transparent;
+    position: relative;
 }
 
 /* dragging thumb - firefox */
 .progressBar:active::-moz-range-thumb {
-  transform: scale(1.2);
-  background-color: #fff;
+    transform: scale(1.2);
+    background-color: #fff;
 }
 
 .loaderCenter {
