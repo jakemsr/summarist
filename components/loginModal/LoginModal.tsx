@@ -140,7 +140,7 @@ const LoginModal: React.FC = () => {
     })
 
     return () => unsubscribe(); // Cleanup the observer on unmount
-  }, []);
+  }, [user]);
 
 
   if (!modal.isOpen || user.isLoggedIn) {
