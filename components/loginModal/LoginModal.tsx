@@ -177,6 +177,7 @@ const LoginModal: React.FC = () => {
               <button
                 className={styles.btn}
                 onClick={resetPassword}
+                disabled={isAuthenticating !== AuthenticationType.none}
               >
                 {isAuthenticating === AuthenticationType.resetPassword ? (
                   <div className={styles.loader}></div>
@@ -203,7 +204,11 @@ const LoginModal: React.FC = () => {
                   Sign up failed: {errMsg}
                 </div>
               )}
-              <button className={styles.btnGoogle} onClick={() => authenticateUser(AuthenticationType.googleLogin)}>
+              <button
+                className={styles.btnGoogle}
+                onClick={() => authenticateUser(AuthenticationType.googleLogin)}
+                disabled={isAuthenticating !== AuthenticationType.none}
+              >
                 <div className={styles.btnImg}>
                   <img src="/google.png" alt="" width="36px" height="36px" style={{ backgroundColor: "white", padding: "4px", borderRadius: "6px" }} />
                 </div>
@@ -230,7 +235,11 @@ const LoginModal: React.FC = () => {
                 value={password}
                 onChange={(e) => { setPassword(e.target.value) }}
               />
-              <button className={styles.btn} onClick={() => authenticateUser(AuthenticationType.userSignup)}>
+              <button
+                className={styles.btn}
+                onClick={() => authenticateUser(AuthenticationType.userSignup)}
+                disabled={isAuthenticating !== AuthenticationType.none}
+              >
                 {isAuthenticating === AuthenticationType.userSignup ? (
                   <div className={styles.loader}></div>
                 ) : (
@@ -257,7 +266,11 @@ const LoginModal: React.FC = () => {
                   Login failed: {errMsg}
                 </div>
               )}
-              <button className={styles.btnGuest} onClick={() => authenticateUser(AuthenticationType.guestLogin)}>
+              <button
+                className={styles.btnGuest}
+                onClick={() => authenticateUser(AuthenticationType.guestLogin)}
+                disabled={isAuthenticating !== AuthenticationType.none}
+              >
                 <div className={styles.btnImg}>
                   <FaUserAlt style={{ paddingLeft: "4px", paddingTop: "4px" }} />
                 </div>
@@ -268,7 +281,11 @@ const LoginModal: React.FC = () => {
                 )}
               </button>
               <div className={styles.divider}>or</div>
-              <button className={styles.btnGoogle} onClick={() => authenticateUser(AuthenticationType.googleLogin)}>
+              <button
+                className={styles.btnGoogle}
+                onClick={() => authenticateUser(AuthenticationType.googleLogin)}
+                disabled={isAuthenticating !== AuthenticationType.none}
+              >
                 <div className={styles.btnImg}>
                   <img src="/google.png" alt="" width="36px" height="36px" style={{ backgroundColor: "white", padding: "4px", borderRadius: "6px" }} />
                 </div>
@@ -295,7 +312,11 @@ const LoginModal: React.FC = () => {
                 value={password}
                 onChange={(e) => { setPassword(e.target.value) }}
               />
-              <button className={styles.btn} onClick={() => authenticateUser(AuthenticationType.userLogin)}>
+              <button
+                className={styles.btn}
+                onClick={() => authenticateUser(AuthenticationType.userLogin)}
+                disabled={isAuthenticating !== AuthenticationType.none}
+              >
                 {isAuthenticating === AuthenticationType.userLogin ? (
                   <div className={styles.loader}></div>
                 ) : (

@@ -195,6 +195,7 @@ const ChoosePlan = () => {
                 className="btn"
                 style={{ width: "300px" }}
                 onClick={goToPayments}
+                disabled={isPaying}
               >
                 {isPaying === true ? (
                   <div className={styles.loader}></div>
