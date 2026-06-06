@@ -3,11 +3,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RiForward10Line, RiPlayLargeFill, RiReplay10Line } from "react-icons/ri";
 import { IoPauseSharp } from "react-icons/io5";
-import { Book } from "@/lib/types";
+import { Book, LibraryChange, LibraryTypes } from "@/lib/types";
+import { firebaseUpdateLibrary } from "@/lib/firebase";
+import { useAppSelector } from "@/lib/hooks";
 import styles from "./player.module.css";
 
 
 const AudioPlayer = ({ book }: { book: Book }) => {
+
+  const user = useAppSelector(state => state.user);
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(0);
@@ -62,6 +66,7 @@ const AudioPlayer = ({ book }: { book: Book }) => {
     const currentAudioRef = audioRef.current;
     if (currentAudioRef) {
       currentAudioRef.onended = () => {
+        firebaseUpdateLibrary(user.firebaseUID, book.id, LibraryTypes.finished, LibraryChange.add);
         setIsPlaying(false);
         currentAudioRef.currentTime = 0;
         setTimeProgress(0);
