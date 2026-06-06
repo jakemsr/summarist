@@ -9,8 +9,23 @@ import {
     signOut,
     User
 } from "firebase/auth"
-import { getFirestore } from "firebase/firestore";
-import { AuthenticationType, FirebaseUserResult, UserSubscription } from "./types";
+import {
+    arrayRemove,
+    arrayUnion,
+    collection,
+    doc,
+    getDoc,
+    getFirestore,
+    setDoc
+} from "firebase/firestore";
+import {
+    AuthenticationType,
+    FirebaseUserResult,
+    UserSubscription,
+    Library,
+    LibraryTypes,
+    LibraryChange
+} from "./types";
 import { UserState } from "./features/user/userSlice";
 
 
@@ -104,11 +119,68 @@ const firebaseGetUserData = async (user: User): Promise<UserState> => {
     return userState;
 }
 
+const firebaseGetLibrary = async (uid: string): Promise<Library | null> => {
+    try {
+        const libraryRef = collection(db, "library");
+        const docRef = doc(libraryRef, uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return docSnap.data() as Library;
+        }
+    } catch (error: any) {
+        if (error instanceof FirebaseError) {
+            console.error("Firebase error", error.code);
+        } else {
+            console.error("Non-Firebase error", error)
+        }
+    }
+    return null;
+}
+
+const firebaseUpdateLibrary = async (uid: string, bookId: string, type: LibraryTypes, change: LibraryChange) => {
+    try {
+        let libraryAction = null;
+        if (change === LibraryChange.add) {
+            libraryAction = arrayUnion(bookId);
+        } else if (change === LibraryChange.remove) {
+            libraryAction = arrayRemove(bookId);
+        } else {
+            return;
+        }
+
+        let libraryChange = {};
+        if (type === LibraryTypes.finished) {
+            libraryChange = { finishedBooks: libraryAction };
+        } else if (type === LibraryTypes.saved) {
+            libraryChange = { savedBooks: libraryAction }
+        } else {
+            return;
+        }
+
+        const libraryRef = collection(db, "library");
+        const docRef = doc(libraryRef, uid);
+        await setDoc(
+            docRef,
+            libraryChange,
+            { merge: true }
+        );
+    } catch (error: any) {
+        if (error instanceof FirebaseError) {
+            console.error("Firebase error", error.code);
+        } else {
+            console.error("Non-Firebase error", error)
+        }
+    }
+}
+
+
 export {
     auth,
     db,
     firebaseAuthenticate,
     firebaseLogout,
     firebaseResetPassword,
-    firebaseGetUserData
+    firebaseGetUserData,
+    firebaseUpdateLibrary,
+    firebaseGetLibrary
 };

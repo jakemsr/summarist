@@ -48,3 +48,18 @@ export enum FontSize {
     large,
     xlarge
 }
+
+export interface Library {
+    savedBooks: string[];
+    finishedBooks: string[];
+}
+
+export enum LibraryTypes {
+    saved,
+    finished
+}
+
+export enum LibraryChange {
+    add,
+    remove
+}

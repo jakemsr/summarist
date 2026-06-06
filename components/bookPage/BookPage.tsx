@@ -1,15 +1,16 @@
 "use client";
 
-import { use, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaRegStar } from "react-icons/fa";
 import { GoClock } from "react-icons/go";
 import { HiOutlineLightBulb, HiOutlineMicrophone } from "react-icons/hi";
 import { AiOutlineRead } from "react-icons/ai";
-import { BsFillBookmarkFill } from "react-icons/bs";
-import { Book, UserSubscription } from "@/lib/types";
+import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
+import { Book, LibraryChange, LibraryTypes, UserSubscription } from "@/lib/types";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { openModal } from "@/lib/features/modal/modalSlice";
+import { firebaseUpdateLibrary, firebaseGetLibrary } from "@/lib/firebase";
 import styles from "./bookPage.module.css";
 
 
@@ -22,9 +23,39 @@ const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [duration, setDuration] = useState<string>("0:00");
+  const [isInLibrary, setIsInLibrary] = useState<boolean>(false);
 
   const user = useAppSelector(state => state.user);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const checkIfInLibrary = async () => {
+      if (!user.isLoggedIn) {
+        return;
+      }
+      const library = await firebaseGetLibrary(user.firebaseUID);
+      if (library) {
+        if (library.savedBooks.includes(book.id)) {
+          setIsInLibrary(true);
+        }
+      }
+    }
+    checkIfInLibrary();
+  }, [user]);
+
+  const addToLibrary = () => {
+    if (!user.isLoggedIn) {
+      dispatch(openModal());
+    } else {
+      firebaseUpdateLibrary(user.firebaseUID, book.id, LibraryTypes.saved, LibraryChange.add);
+      setIsInLibrary(true);
+    }
+  }
+
+  const removeFromLibrary = () => {
+    firebaseUpdateLibrary(user.firebaseUID, book.id, LibraryTypes.saved, LibraryChange.remove);
+    setIsInLibrary(false);
+  }
 
   const handlePlayer = () => {
     if (!user.isLoggedIn) {
@@ -116,14 +147,25 @@ const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
             </button>
           </div>
 
-          <div className={styles.bookMark}>
-            <div className={styles.bookMarkIcon}>
-              <BsFillBookmarkFill />
+          {isInLibrary ? (
+            <div className={styles.bookMark} onClick={removeFromLibrary}>
+              <div className={styles.bookMarkIcon}>
+                <BsBookmarkFill />
+              </div>
+              <div>
+                Saved in My Library
+              </div>
             </div>
-            <div>
-              Saved in My Library
+          ) : (
+            <div className={styles.bookMark} onClick={addToLibrary}>
+              <div className={styles.bookMarkIcon}>
+                <BsBookmark />
+              </div>
+              <div>
+                Add title to My Library
+              </div>
             </div>
-          </div>
+          )}
 
           <div className={styles.secondaryTitle}>
             What's it about?
