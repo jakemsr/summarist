@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { AiFillFileText, AiFillBulb, AiFillAudio } from "react-icons/ai";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
 import { BiCrown } from "react-icons/bi";
@@ -12,6 +13,33 @@ import { openModal } from '@/lib/features/modal/modalSlice';
 export default function Home() {
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const elements = document.querySelectorAll(".statistics__content--header");
+    let numberOfChildren = 0;
+    elements.forEach(element => { numberOfChildren = Math.max(element.childElementCount, numberOfChildren) });
+
+    let current = numberOfChildren - 1;
+    const updateActive = () => {
+      const previous = current;
+      current = (current + 1) % numberOfChildren;
+      elements.forEach(element => {
+        if (element.children[previous]) {
+          element.children[previous].classList.remove("statistics__heading--active");
+        }
+        if (element.children[current]) {
+          element.children[current].classList.add("statistics__heading--active");
+        }
+      })
+    }
+
+    const interval = setInterval(() => {
+      updateActive();
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
 
   return (
     <>
