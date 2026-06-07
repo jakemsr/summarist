@@ -34,7 +34,7 @@ const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
         return;
       }
       const library = await firebaseGetLibrary(user.firebaseUID);
-      if (library) {
+      if (library && library.savedBooks) {
         if (library.savedBooks.includes(book.id)) {
           setIsInLibrary(true);
         }
