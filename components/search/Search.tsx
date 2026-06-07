@@ -39,10 +39,16 @@ const Search = () => {
     if (debouncedValue) {
       const getBooks = async (searchText: string) => {
         setLoadingBooks(true);
-        const searchURL = "https://us-central1-summaristt.cloudfunctions.net/getBooksByAuthorOrTitle?search=" + searchText;
-        const result = await fetch(searchURL);
-        const books: Book[] = await result.json();
-        setBooks(books);
+        try {
+          const searchURL = "https://us-central1-summaristt.cloudfunctions.net/getBooksByAuthorOrTitle?search=" + searchText;
+          const result = await fetch(searchURL);
+          const books: Book[] = await result.json();
+          if (books) {
+            setBooks(books);
+          }
+        } catch (error) {
+          console.error("Error fetching books: ", error);
+        }
         setLoadingBooks(false);
       }
       getBooks(debouncedValue);
