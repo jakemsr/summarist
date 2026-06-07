@@ -43,31 +43,26 @@ const page = () => {
       }
       const myLibrary = await firebaseGetLibrary(user.firebaseUID);
       setLibrary(myLibrary);
+      if (myLibrary) {
+        if (myLibrary.savedBooks && myLibrary.savedBooks.length > 0) {
+          const savedArr: Promise<Book>[] = [];
+          myLibrary.savedBooks.forEach((bookId) => {
+            savedArr.push(getBook(bookId));
+          });
+          setSavedPromises(Promise.all(savedArr));
+        }
+        if (myLibrary.finishedBooks && myLibrary.finishedBooks.length > 0) {
+          const finishedArr: Promise<Book>[] = [];
+          myLibrary.finishedBooks.forEach((bookId) => {
+            finishedArr.push(getBook(bookId));
+          });
+          setFinishedPromises(Promise.all(finishedArr));
+        }
+      }
+      setLoading(false);
     }
     getLibrary();
   }, [user]);
-
-  useEffect(() => {
-    if (!library) {
-      setLoading(false);
-      return;
-    }
-    if (library.savedBooks && library.savedBooks.length > 0) {
-      const savedArr: Promise<Book>[] = [];
-      library.savedBooks.forEach((bookId) => {
-        savedArr.push(getBook(bookId));
-      });
-      setSavedPromises(Promise.all(savedArr));
-    }
-    if (library.finishedBooks && library.finishedBooks.length > 0) {
-      const finishedArr: Promise<Book>[] = [];
-      library.finishedBooks.forEach((bookId) => {
-        finishedArr.push(getBook(bookId));
-      });
-      setFinishedPromises(Promise.all(finishedArr));
-    }
-    setLoading(false);
-  }, [library]);
 
 
   return (
