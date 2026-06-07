@@ -65,6 +65,10 @@ const AudioPlayer = ({ book }: { book: Book }) => {
   useEffect(() => {
     const currentAudioRef = audioRef.current;
     if (currentAudioRef) {
+      // if metadata loaded before listener was attached
+      if (currentAudioRef.readyState >= 1) {
+        onLoadedMetadata();
+      }
       currentAudioRef.onended = () => {
         firebaseUpdateLibrary(user.firebaseUID, book.id, LibraryTypes.finished, LibraryChange.add);
         setIsPlaying(false);
