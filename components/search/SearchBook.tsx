@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { LuClock3 } from "react-icons/lu";
 import { Book } from "@/lib/types";
@@ -12,6 +12,16 @@ const SearchBook = ({ book }: { book: Book }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [duration, setDuration] = useState<string>("0:00");
+
+  useEffect(() => {
+    const currentAudioRef = audioRef.current;
+    if (currentAudioRef) {
+      // if metadata loaded before listener was attached
+      if (currentAudioRef.readyState >= 1) {
+        onLoadedMetadata();
+      }
+    }
+  }, []);
 
   const onLoadedMetadata = () => {
     if (audioRef.current) {

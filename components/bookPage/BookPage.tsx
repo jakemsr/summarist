@@ -29,6 +29,14 @@ const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    const currentAudioRef = audioRef.current;
+    if (currentAudioRef) {
+      // if metadata loaded before listener was attached
+      if (currentAudioRef.readyState >= 1) {
+        onLoadedMetadata();
+      }
+    }
+
     const checkIfInLibrary = async () => {
       if (!user.isLoggedIn) {
         return;
@@ -74,7 +82,7 @@ const BookPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
       let seconds = Math.floor(audioRef.current.duration);
       const minutes = Math.floor(seconds / 60);
       seconds = seconds % 60;
-      setDuration(`${minutes.toString().padStart(2,"0")}:${seconds.toString().padStart(2,"0")}`);
+      setDuration(`${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`);
     }
   };
 

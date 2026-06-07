@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AiOutlineStar } from "react-icons/ai";
 import { LuClock3 } from "react-icons/lu";
@@ -16,7 +16,17 @@ const BookCard = ({ book }: { book: Book }) => {
   const [duration, setDuration] = useState<string>("0:00");
 
   const user = useAppSelector(state => state.user);
-  
+
+  useEffect(() => {
+      const currentAudioRef = audioRef.current;
+    if (currentAudioRef) {
+      // if metadata loaded before listener was attached
+      if (currentAudioRef.readyState >= 1) {
+        onLoadedMetadata();
+      }
+    }
+  }, []);
+
   const onLoadedMetadata = () => {
     if (audioRef.current) {
       let seconds = Math.floor(audioRef.current.duration);

@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BsFillPlayFill } from "react-icons/bs";
 import { Book } from "@/lib/types";
@@ -16,6 +16,16 @@ const Selected = ({ books }: { books: Promise<Book[]> }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [duration, setDuration] = useState<string>("0:00");
+
+  useEffect(() => {
+    const currentAudioRef = audioRef.current;
+    if (currentAudioRef) {
+      // if metadata loaded before listener was attached
+      if (currentAudioRef.readyState >= 1) {
+        onLoadedMetadata();
+      }
+    }
+  }, []);
 
   const onLoadedMetadata = () => {
     if (audioRef.current) {
