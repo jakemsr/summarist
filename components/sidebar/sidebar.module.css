@@ -138,6 +138,10 @@
     .container {
         transform: translateX(-100%);
     }
+
+    .wrapperPlayer {
+        height: calc(-240px + 100vh);
+    }
 }
 
 .containerOpen {

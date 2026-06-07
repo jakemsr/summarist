@@ -65,3 +65,9 @@
 .loginBtn:hover {
     background-color: #20ba68;
 }
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 24px;
+    }
+}

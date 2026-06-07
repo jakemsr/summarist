@@ -114,13 +114,34 @@
     display: flex;
     overflow-x: auto;
     gap: 16px;
-    scroll-snap-type: mandatory;
-    scroll-snap-type: x;
+    scroll-snap-type: x mandatory;
     margin-bottom: 32px;
+
+    /* Setting this makes scrolling difficult if user doesn't have mouse wheels
+       and it's not clear there are even more books to scroll to. */
+    /* scrollbar-width: none; */
 }
+
 
 @media (max-width: 1200px) {
     .selectedBook, .selectedBookSkeleton {
         width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .selectedBook {
+        width: 100%;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .selectedSubtitle {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .selectedLine {
+        display: none;
     }
 }
