@@ -86,7 +86,8 @@ const page = () => {
               {library && library.savedBooks && savedPromises ? (
                 <>
                   <div className={styles.subTitle}>
-                    {library.savedBooks.length} items
+                    {library.savedBooks.length}
+                    {library.savedBooks.length === 1 ? " item" : " items"}
                   </div>
                   <Suspense fallback={<RecommendedSkeleton />}>
                     <Recommended books={savedPromises} />
@@ -122,7 +123,8 @@ const page = () => {
               {library && library.finishedBooks && finishedPromises ? (
                 <>
                   <div className={styles.subTitle}>
-                    {library.finishedBooks.length} items
+                    {library.finishedBooks.length}
+                    {library.finishedBooks.length === 1 ? " item" : " items"}
                   </div>
                   <Suspense fallback={<RecommendedSkeleton />}>
                     <Recommended books={finishedPromises} />

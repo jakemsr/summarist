@@ -34,11 +34,11 @@ const PlayerPage = ({ bookPromise }: { bookPromise: Promise<Book> }) => {
   return (
     <div className={styles.summary}>
 
-      <div className={styles.bookSummary}>
+      <div className={styles.bookSummary} style={{ fontSize: fontSize }}>
         <div className={styles.summaryTitle}>
           <b>{book.title}</b>
         </div>
-        <div className={styles.summaryText} style={{ fontSize: fontSize }}>
+        <div className={styles.summaryText}>
           {book.summary}
         </div>
       </div>

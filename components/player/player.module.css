@@ -238,3 +238,33 @@
         transform: rotate(360deg);
     }
 }
+
+@media (max-width: 768px) {
+    .summary {
+        height: calc(100vh - 260px);
+    }
+
+    .summaryText {
+        font-size: 14px;
+    }
+
+    .summaryTitle {
+        font-size: 20px;
+    }
+
+    .audioWrapper {
+        height: 180px;
+        padding: 16px 24px;
+        flex-direction: column;
+    }
+
+    .audioWrapper>div {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .trackImageMask {
+        max-width: 80px;
+    }
+
+}
