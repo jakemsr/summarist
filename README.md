@@ -1,36 +1,20 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Summarist
 
-## Getting Started
+[**Live Site**](https://summarist-eight.vercel.app/)
 
-First, run the development server:
+### Description
+Subscription service for reading or listening to summaries of popular books.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Tech Stack
+React, NextJS, TailwindCSS, Redux Tool Kit, Firebase Auth & Firestore, Stripe
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Why
+This project was part of my front end course. There was a lot of learning in this project. One particular issue was loading audio file metadata. NextJS wants to render as much as possible on the server side and this can cause a race condition where the metadata loading gets missed. The fix is to employ useEffect hooks to check if data has been loaded because these hooks only run on the client side.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Features
+* Authentication, both email/password and Google OAuth via Firebase
+* Authorization with Stripe subscriptions
+* Database storage of users' libraries in Firestore
+* Complex loading states
+* Audio player
+* Responsive design
